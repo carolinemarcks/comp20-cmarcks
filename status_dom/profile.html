@@ -6,8 +6,18 @@
 <title>Fecesbook</title>
 <script>
 function addEvent(){
+	d=new Date();
+	m=d.getMinutes();
+	if(m<10){
+		string_m='0'+String(m);
+	}else{
+		string_m=String(m);
+	}
+	update=String(d.getMonth()+1)+'/'+String(d.getDate())+'/'+String(d.getFullYear())+' ';
+	update+=String(d.getHours())+':'+string_m+' ';
+	update+=document.getElementById("msg").value;
 	para=document.createElement("p");
-	node=document.createTextNode(document.getElementById("msg").value);
+	node=document.createTextNode(update);
 	para.appendChild(node);
 
 	element=document.getElementById("status");
