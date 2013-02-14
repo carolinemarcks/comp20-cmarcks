@@ -10,7 +10,7 @@ function drawmspacman() {
             console.log(spritesheet.complete);
             if (canvas.getContext) {
                 ctx = canvas.getContext('2d');
-                ctx.clearRect(0, 0, 1000, 1000); // clear the screen
+                ctx.clearRect(0, 0, 1000, 500); // clear the screen
             	ctx.drawImage(img,320,0,465,140,x,y,465,140);
             	ctx.drawImage(img,0,0,20,20,x+100,y+93,19,19);
             	ctx.drawImage(img,0,99,20,20,x+133,y+93,19,19);	
