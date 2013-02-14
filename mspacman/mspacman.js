@@ -7,7 +7,6 @@ function drawmspacman() {
 			y=(h-140)/2
 
             canvas = document.getElementById('mspacman');
-            console.log(spritesheet.complete);
             if (canvas.getContext) {
                 ctx = canvas.getContext('2d');
                 ctx.clearRect(0, 0, 1000, 500); // clear the screen
