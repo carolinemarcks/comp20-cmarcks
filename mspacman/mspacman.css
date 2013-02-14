@@ -1,6 +1,7 @@
+#spritesheet {
+  display: none;
+}
+
 body{
 	background: #b5dfef;
-}
-#spritesheet{
-	display: none;
 }
