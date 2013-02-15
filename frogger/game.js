@@ -21,15 +21,16 @@ function drawBoard(){
 	ctx.fillRect(0,0,399,280);
 	ctx.fillStyle="#000000";
 	ctx.fillRect(0,280,399,290);
-	
+	ctx.drawImage(img,frogger[0],frogger[1],frogger[2],frogger[3],0,0,frogger[2],frogger[3]);
 	ctx.drawImage(img,purpleblock[0],purpleblock[1],purpleblock[2],purpleblock[3],0,605-purpleblock[1],purpleblock[2],purpleblock[3]);
 	ctx.drawImage(img,greenblock[0],greenblock[1],greenblock[2],greenblock[3],0,40,greenblock[2],greenblock[3]);
+	ctx.drawImage(img,purpleblock[0],purpleblock[1],purpleblock[2],purpleblock[3],0,greenblock[3]+215,purpleblock[2],purpleblock[3]);
+	
 	drawRow(row1LogLocs,medLog,greenblock[3]+40);
 	drawRow(row2TurtleLocs,turtle1,greenblock[3]+75);
 	drawRow(row3LogLocs,bigLog,greenblock[3]+110);
 	drawRow(row4LogLocs,smallLog,greenblock[3]+145);
 	drawRow(row5TurtleLocs,turtle1,greenblock[3]+180);
-	ctx.drawImage(img,purpleblock[0],purpleblock[1],purpleblock[2],purpleblock[3],0,greenblock[3]+215,purpleblock[2],purpleblock[3]);
 	drawRow(row6CarLocs,truck6,greenblock[3]+265);
 	drawRow(row7CarLocs,car7,greenblock[3]+300);
 	drawRow(row8CarLocs,car8,greenblock[3]+335);
@@ -85,6 +86,8 @@ function initVars(){
 	car8=[7,264,33,25];
 	car9_1=[6,298,34,20];
 	car10=[80,262,29,29];
+	frogger=[9,8,332,40];
+
 
 
 	
