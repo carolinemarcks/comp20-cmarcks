@@ -42,6 +42,8 @@ function drawBoard(){
 	drawRow(row8CarLocs,car8,greenblock[3]+335);
 	drawRow(row9CarLocs,car9_1,greenblock[3]+370);
 	drawRow(row10CarLocs,car10,greenblock[3]+405);
+	
+	drawFrog(frogsu);
 }
 
 function drawRow(boardLoc,spriteLoc,verticalOffset){
@@ -50,6 +52,9 @@ function drawRow(boardLoc,spriteLoc,verticalOffset){
 			ctx.drawImage(img,spriteLoc[0],spriteLoc[1],spriteLoc[2],spriteLoc[3],boardLoc[i],verticalOffset,spriteLoc[2],spriteLoc[3]);
 		}
 	}
+}
+function drawFrog(frogstate){
+	ctx.drawImage(img,frogstate[0],frogstate[1],frogstate[2],frogstate[3],frogx,frogy,frogstate[2],frogstate[3]);
 }
 function drawScore(){
 	frogLifex=0;
@@ -66,7 +71,8 @@ function drawScore(){
 }
 
 function initVars(){
-	frogx=0;
+	frogx=180;
+	frogy=500;
 	numLives=3;
 	isGameOver=false;
 	level=1;
@@ -108,7 +114,7 @@ function initVars(){
 	car10=[80,262,29,29];
 	frogger=[9,8,332,40];
 	frogsr=[8,332,27,26];
-
+	frogsu=[10,366,27,25]
 
 	
 	purpleblock=[0,115,399,40];
