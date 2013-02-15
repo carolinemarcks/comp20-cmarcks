@@ -19,6 +19,7 @@ function start_game(){
 function drawBoard(){
 	
 	ctx.drawImage(img,purpleblock[0],purpleblock[1],purpleblock[2],purpleblock[3],0,565-purpleblock[1],purpleblock[2],purpleblock[3]);
+	ctx.drawImage(img,greenblock[0],greenblock[1],greenblock[2],greenblock[3],0,0,greenblock[2],greenblock[3]);
 	
 }
 
@@ -59,8 +60,14 @@ function initVars(){
 	smallLog=[4,230,90,20];
 	
 	purpleblock=[0,115,399,40];
+	greenblock=[0,54,399,56];
+	
 
 }
 
+/*
+canvas is 565 px tall
+40 for purpleblock
+*/
 
 
