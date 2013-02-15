@@ -57,6 +57,12 @@ function drawScore(){
 		ctx.drawImage(img,frogsr[0],frogsr[1],frogsr[2],frogsr[3],frogLifex,530,frogsr[2]/1.75,frogsr[3]/1.75);
 		frogLifex+=(frogsr[2]/1.75);
 	}
+	ctx.fillStyle = "#7CFC00";
+	ctx.font="16pt Arial";
+	ctx.fillText("Level:"+level,80,545);
+	ctx.font="10pt Arial";
+	ctx.fillText("Score:"+score, 5, 560);
+	ctx.fillText("Highcore:"+highscore, 80, 560);
 }
 
 function initVars(){
@@ -88,6 +94,7 @@ function initVars(){
 	flyLoc=3;
 	flyVisibile=false;
 	score=0;
+	highscore=0;
 	
 	//all image locs stored by x,y,width,height
 	bigLog=[4,164,184,24];
