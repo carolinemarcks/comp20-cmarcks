@@ -7,7 +7,8 @@ function start_game(){
     	ctx.clearRect(0, 0, 565, 399); // clear the screen
         img= new Image();
         img.src="assets/frogger_sprites.png";
-        initVars();
+        initGameVars();
+        initSpriteVars();
         img.onload=drawBoard;
             	
     }else {
@@ -70,7 +71,7 @@ function drawScore(){
 	ctx.fillText("Highcore:"+highscore, 80, 560);
 }
 
-function initVars(){
+function initGameVars(){
 	frogx=180;
 	frogy=500;
 	numLives=3;
@@ -102,7 +103,10 @@ function initVars(){
 	score=0;
 	highscore=0;
 	
-	//all image locs stored by x,y,width,height
+}
+
+function initSpriteVars(){
+		//all image locs stored by x,y,width,height
 	bigLog=[4,164,184,24];
 	medLog=[4,196,120,24];
 	smallLog=[4,230,90,20];
@@ -116,14 +120,8 @@ function initVars(){
 	frogsr=[8,332,27,26];
 	frogsu=[10,366,27,25]
 
-	
 	purpleblock=[0,115,399,40];
 	greenblock=[0,54,399,56];
 }
-
-/*
-canvas is 565 px tall
-40 for purpleblock
-*/
 
 
