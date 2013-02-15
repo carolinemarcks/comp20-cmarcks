@@ -21,10 +21,16 @@ function drawBoard(){
 	ctx.fillRect(0,0,399,280);
 	ctx.fillStyle="#000000";
 	ctx.fillRect(0,280,399,290);
+	//banner
 	ctx.drawImage(img,frogger[0],frogger[1],frogger[2],frogger[3],0,0,frogger[2],frogger[3]);
+	//bottom purple block
 	ctx.drawImage(img,purpleblock[0],purpleblock[1],purpleblock[2],purpleblock[3],0,605-purpleblock[1],purpleblock[2],purpleblock[3]);
-	ctx.drawImage(img,greenblock[0],greenblock[1],greenblock[2],greenblock[3],0,40,greenblock[2],greenblock[3]);
+	//middle purple block
 	ctx.drawImage(img,purpleblock[0],purpleblock[1],purpleblock[2],purpleblock[3],0,greenblock[3]+215,purpleblock[2],purpleblock[3]);
+	//top green block
+	ctx.drawImage(img,greenblock[0],greenblock[1],greenblock[2],greenblock[3],0,40,greenblock[2],greenblock[3]);
+	
+	drawScore();
 	
 	drawRow(row1LogLocs,medLog,greenblock[3]+40);
 	drawRow(row2TurtleLocs,turtle1,greenblock[3]+75);
@@ -43,6 +49,13 @@ function drawRow(boardLoc,spriteLoc,verticalOffset){
 		if(boardLoc[i]>(0-spriteLoc[2])&&boardLoc[i]<399){
 			ctx.drawImage(img,spriteLoc[0],spriteLoc[1],spriteLoc[2],spriteLoc[3],boardLoc[i],verticalOffset,spriteLoc[2],spriteLoc[3]);
 		}
+	}
+}
+function drawScore(){
+	frogLifex=0;
+	for(i=0; i<numLives; i++){
+		ctx.drawImage(img,frogsr[0],frogsr[1],frogsr[2],frogsr[3],frogLifex,530,frogsr[2]/1.75,frogsr[3]/1.75);
+		frogLifex+=(frogsr[2]/1.75);
 	}
 }
 
@@ -87,7 +100,7 @@ function initVars(){
 	car9_1=[6,298,34,20];
 	car10=[80,262,29,29];
 	frogger=[9,8,332,40];
-
+	frogsr=[8,332,27,26];
 
 
 	
