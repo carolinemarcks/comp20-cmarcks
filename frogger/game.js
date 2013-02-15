@@ -18,19 +18,19 @@ function start_game(){
 
 function drawBoard(){
 	
-	ctx.drawImage(img,purpleblock[0],purpleblock[1],purpleblock[2],purpleblock[3],0,565-purpleblock[1],purpleblock[2],purpleblock[3]);
-	ctx.drawImage(img,greenblock[0],greenblock[1],greenblock[2],greenblock[3],0,0,greenblock[2],greenblock[3]);
-	drawRow(row1LogLocs,medLog,greenblock[3]);
-	drawRow(row2TurtleLocs,turtle1,greenblock[3]+35);
-	drawRow(row3LogLocs,bigLog,greenblock[3]+70);
-	drawRow(row4LogLocs,smallLog,greenblock[3]+105);
-	drawRow(row5TurtleLocs,turtle1,greenblock[3]+140);
-	ctx.drawImage(img,purpleblock[0],purpleblock[1],purpleblock[2],purpleblock[3],0,greenblock[3]+175,purpleblock[2],purpleblock[3]);
-	drawRow(row6CarLocs,truck6,greenblock[3]+225);
-	drawRow(row7CarLocs,car7,greenblock[3]+260);
-	drawRow(row8CarLocs,car8,greenblock[3]+295);
-	drawRow(row9CarLocs,car9_1,greenblock[3]+330);
-	drawRow(row10CarLocs,car10,greenblock[3]+365);
+	ctx.drawImage(img,purpleblock[0],purpleblock[1],purpleblock[2],purpleblock[3],0,605-purpleblock[1],purpleblock[2],purpleblock[3]);
+	ctx.drawImage(img,greenblock[0],greenblock[1],greenblock[2],greenblock[3],0,40,greenblock[2],greenblock[3]);
+	drawRow(row1LogLocs,medLog,greenblock[3]+40);
+	drawRow(row2TurtleLocs,turtle1,greenblock[3]+75);
+	drawRow(row3LogLocs,bigLog,greenblock[3]+110);
+	drawRow(row4LogLocs,smallLog,greenblock[3]+145);
+	drawRow(row5TurtleLocs,turtle1,greenblock[3]+180);
+	ctx.drawImage(img,purpleblock[0],purpleblock[1],purpleblock[2],purpleblock[3],0,greenblock[3]+215,purpleblock[2],purpleblock[3]);
+	drawRow(row6CarLocs,truck6,greenblock[3]+265);
+	drawRow(row7CarLocs,car7,greenblock[3]+300);
+	drawRow(row8CarLocs,car8,greenblock[3]+335);
+	drawRow(row9CarLocs,car9_1,greenblock[3]+370);
+	drawRow(row10CarLocs,car10,greenblock[3]+405);
 }
 
 function drawRow(boardLoc,spriteLoc,verticalOffset){
