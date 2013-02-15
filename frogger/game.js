@@ -18,7 +18,7 @@ function start_game(){
 
 function drawBoard(){
 	
-	
+	ctx.drawImage(img,purpleblock[0],purpleblock[1],purpleblock[2],purpleblock[3],0,565-purpleblock[1],purpleblock[2],purpleblock[3]);
 	
 }
 
