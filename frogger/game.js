@@ -17,6 +17,10 @@ function start_game(){
 }
 
 function drawBoard(){
+	ctx.fillStyle="#191970";
+	ctx.fillRect(0,0,399,280);
+	ctx.fillStyle="#000000";
+	ctx.fillRect(0,280,399,290);
 	
 	ctx.drawImage(img,purpleblock[0],purpleblock[1],purpleblock[2],purpleblock[3],0,605-purpleblock[1],purpleblock[2],purpleblock[3]);
 	ctx.drawImage(img,greenblock[0],greenblock[1],greenblock[2],greenblock[3],0,40,greenblock[2],greenblock[3]);
