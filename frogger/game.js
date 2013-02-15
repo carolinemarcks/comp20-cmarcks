@@ -22,6 +22,7 @@ function drawBoard(){
 	ctx.fillRect(0,0,399,280);
 	ctx.fillStyle="#000000";
 	ctx.fillRect(0,280,399,290);
+	
 	//banner
 	ctx.drawImage(img,frogger[0],frogger[1],frogger[2],frogger[3],0,0,frogger[2],frogger[3]);
 	//bottom purple block
@@ -57,6 +58,7 @@ function drawRow(boardLoc,spriteLoc,verticalOffset){
 function drawFrog(frogstate){
 	ctx.drawImage(img,frogstate[0],frogstate[1],frogstate[2],frogstate[3],frogx,frogy,frogstate[2],frogstate[3]);
 }
+
 function drawScore(){
 	frogLifex=0;
 	for(i=0; i<numLives; i++){
