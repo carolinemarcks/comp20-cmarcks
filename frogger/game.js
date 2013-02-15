@@ -21,10 +21,16 @@ function drawBoard(){
 	ctx.drawImage(img,purpleblock[0],purpleblock[1],purpleblock[2],purpleblock[3],0,565-purpleblock[1],purpleblock[2],purpleblock[3]);
 	ctx.drawImage(img,greenblock[0],greenblock[1],greenblock[2],greenblock[3],0,0,greenblock[2],greenblock[3]);
 	drawRow(row1LogLocs,medLog,greenblock[3]);
-	drawRow(row2TurtleLocs,turtle1,greenblock[3]+30);
-	drawRow(row3LogLocs,bigLog,greenblock[3]+60);
-	drawRow(row4LogLocs,smallLog,greenblock[3]+90);
-	drawRow(row5TurtleLocs,turtle1,greenblock[3]+120);
+	drawRow(row2TurtleLocs,turtle1,greenblock[3]+35);
+	drawRow(row3LogLocs,bigLog,greenblock[3]+70);
+	drawRow(row4LogLocs,smallLog,greenblock[3]+105);
+	drawRow(row5TurtleLocs,turtle1,greenblock[3]+140);
+	ctx.drawImage(img,purpleblock[0],purpleblock[1],purpleblock[2],purpleblock[3],0,greenblock[3]+175,purpleblock[2],purpleblock[3]);
+	drawRow(row6CarLocs,truck6,greenblock[3]+225);
+	drawRow(row7CarLocs,car7,greenblock[3]+260);
+	drawRow(row8CarLocs,car8,greenblock[3]+295);
+	drawRow(row9CarLocs,car9_1,greenblock[3]+330);
+	drawRow(row10CarLocs,car10,greenblock[3]+365);
 }
 
 function drawRow(boardLoc,spriteLoc,verticalOffset){
@@ -70,6 +76,13 @@ function initVars(){
 	medLog=[4,196,120,24];
 	smallLog=[4,230,90,20];
 	turtle1=[12,406,35,25];
+	truck6=[100,300,54,22];
+	car7=[44,262,43,29];
+	car8=[7,264,33,25];
+	car9_1=[6,298,34,20];
+	car10=[80,262,29,29];
+
+
 	
 	purpleblock=[0,115,399,40];
 	greenblock=[0,54,399,56];
