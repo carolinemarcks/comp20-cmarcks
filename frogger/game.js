@@ -48,10 +48,10 @@ function drawBoard(){
 	drawFrog(frogsu);
 }
 
-function drawRow(boardLoc,spriteLoc,verticalOffset){
-	for(i=0;i<boardLoc.length;i++){
-		if(boardLoc[i]>(0-spriteLoc[2])&&boardLoc[i]<399){
-			ctx.drawImage(img,spriteLoc[0],spriteLoc[1],spriteLoc[2],spriteLoc[3],boardLoc[i],verticalOffset,spriteLoc[2],spriteLoc[3]);
+function drawRow(itemLoc,spriteLoc,verticalOffset){
+	for(i=0;i<itemLoc.length;i++){
+		if(itemLoc[i]>(0-spriteLoc[2])&&itemLoc[i]<399){
+			ctx.drawImage(img,spriteLoc[0],spriteLoc[1],spriteLoc[2],spriteLoc[3],itemLoc[i],verticalOffset,spriteLoc[2],spriteLoc[3]);
 		}
 	}
 }
@@ -119,8 +119,8 @@ function initSpriteVars(){
 	car9_1=[6,298,34,25];
 	car10=[80,262,29,29];
 	frogger=[9,8,332,40];
-	frogsr=[8,332,27,26];
-	frogsu=[10,366,27,25]
+	frogsr=[8,332,27,26];//small right
+	frogsu=[10,366,27,25];//small up
 
 	purpleblock=[0,115,399,40];
 	greenblock=[0,54,399,56];
