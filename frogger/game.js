@@ -10,7 +10,7 @@ function start_game(){
         initGameVars();
         initSpriteVars();
         img.onload=drawBoard;
-            	
+           	
     }else {
         alert('Sorry, canvas is not supported on your browser!');
     }
@@ -24,13 +24,17 @@ function drawBoard(){
 	ctx.fillRect(0,280,399,290);
 	
 	//banner
-	ctx.drawImage(img,frogger[0],frogger[1],frogger[2],frogger[3],0,0,frogger[2],frogger[3]);
+	ctx.drawImage(img,frogger[0],frogger[1],frogger[2],frogger[3],0,0,frogger[2],
+		frogger[3]);
 	//bottom purple block
-	ctx.drawImage(img,purpleblock[0],purpleblock[1],purpleblock[2],purpleblock[3],0,605-purpleblock[1],purpleblock[2],purpleblock[3]);
+	ctx.drawImage(img,purpleblock[0],purpleblock[1],purpleblock[2],purpleblock[3],
+		0,605-purpleblock[1],purpleblock[2],purpleblock[3]);
 	//middle purple block
-	ctx.drawImage(img,purpleblock[0],purpleblock[1],purpleblock[2],purpleblock[3],0,greenblock[3]+215,purpleblock[2],purpleblock[3]);
+	ctx.drawImage(img,purpleblock[0],purpleblock[1],purpleblock[2],purpleblock[3],
+		0,greenblock[3]+215,purpleblock[2],purpleblock[3]);
 	//top green block
-	ctx.drawImage(img,greenblock[0],greenblock[1],greenblock[2],greenblock[3],0,40,greenblock[2],greenblock[3]);
+	ctx.drawImage(img,greenblock[0],greenblock[1],greenblock[2],greenblock[3],0,40,
+		greenblock[2],greenblock[3]);
 	
 	drawScore();
 	
@@ -51,18 +55,21 @@ function drawBoard(){
 function drawRow(itemLoc,spriteLoc,verticalOffset){
 	for(i=0;i<itemLoc.length;i++){
 		if(itemLoc[i]>(0-spriteLoc[2])&&itemLoc[i]<399){
-			ctx.drawImage(img,spriteLoc[0],spriteLoc[1],spriteLoc[2],spriteLoc[3],itemLoc[i],verticalOffset,spriteLoc[2],spriteLoc[3]);
+			ctx.drawImage(img,spriteLoc[0],spriteLoc[1],spriteLoc[2],spriteLoc[3],
+				itemLoc[i],verticalOffset,spriteLoc[2],spriteLoc[3]);
 		}
 	}
 }
 function drawFrog(frogstate){
-	ctx.drawImage(img,frogstate[0],frogstate[1],frogstate[2],frogstate[3],frogx,frogy,frogstate[2],frogstate[3]);
+	ctx.drawImage(img,frogstate[0],frogstate[1],frogstate[2],frogstate[3],frogx,
+		frogy,frogstate[2],frogstate[3]);
 }
 
 function drawScore(){
 	frogLifex=0;
 	for(i=0; i<numLives; i++){
-		ctx.drawImage(img,frogsr[0],frogsr[1],frogsr[2],frogsr[3],frogLifex,530,frogsr[2]/1.75,frogsr[3]/1.75);
+		ctx.drawImage(img,frogsr[0],frogsr[1],frogsr[2],frogsr[3],frogLifex,530,
+			frogsr[2]/1.75,frogsr[3]/1.75);
 		frogLifex+=(frogsr[2]/1.75);
 	}
 	ctx.fillStyle = "#7CFC00";
