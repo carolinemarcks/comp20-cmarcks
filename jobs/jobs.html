@@ -21,6 +21,15 @@
 		c.innerHTML="Location"
 		c=r0.insertCell(2);
 		c.innerHTML="Position";		
+		for(i=0; i<parsed.length; i++){
+			r=table.insertRow(i+1);
+		    c=r.insertCell(0);
+		    c.innerHTML=parsed[i]["company"];
+		    c=r.insertCell(1);
+		    c.innerHTML=parsed[i]["location"];
+		    c=r.insertCell(2);
+		    c.innerHTML=parsed[i]["position"];
+		}
 		document.getElementById("list").appendChild(table);
 	}
 </script>
