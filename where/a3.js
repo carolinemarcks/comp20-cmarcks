@@ -1,5 +1,12 @@
 var map;
+/*
 var redStations = [];
+var pkeyToStationName = [];
+var keyData=[];
+var stationOrder=[];
+*/
+
+
 function initialize()
 	{
 		// Check if geolocation is supported by browser
@@ -38,7 +45,59 @@ function placeMap(pos) {
     yourLoc.setMap(map);
 }
 
-var redLineRequest;
+
+function placeRedLineStations(){
+	var redLineMarker = new Object();
+	for(key in rlstations){
+		var station = rlstations[key];
+		var pos = new google.maps.LatLng(station["stop_lat"],station["stop_lon"]);
+		redLineMarker[key]=createMarker(pos,key)	
+    	redLineMarker[key].setMap(map);   		
+	}
+	drawStationConnections();
+
+}
+
+function createMarker(pos, t) {
+	var marker = new google.maps.Marker({
+    				position: pos,
+    				title:t
+    		});
+    var infowindow = new google.maps.InfoWindow({
+   						content: "I am "+t+"station"
+   					});
+    google.maps.event.addListener(marker, 'click', function() { 
+	   /*infowindow.setContent('test: ' + i + '');*/
+	   infowindow.open(map, marker);
+    }); 
+    
+ 
+    
+    return marker;  
+}
+
+function drawStationConnections(){
+	//assumption, there are three branches, trunk, Braintree, and Ashmont, and Braintree and Ashmont split off from the trunk
+	for(i=0; i<connections.length; i++){
+		var rlcoord = [];
+		for(j=0; j<connections[i].length; j++){
+			var skey=connections[i][j];
+			console.log(skey);
+			var pos=new google.maps.LatLng(rlstations[skey]["stop_lat"],rlstations[skey]["stop_lon"]);
+			rlcoord.push(pos);
+		}
+		var rlPath = new google.maps.Polyline({
+			path: rlcoord,
+			strokeColor: "#FF0000",
+			strokeOpacity: 1.0,
+			strokeWeight: 2
+		});
+		rlPath.setMap(map);
+	}
+}
+
+
+/*var redLineRequest;
 function placeRedLineStations(){
 	try {
 		redLineRequest = new XMLHttpRequest();
@@ -63,9 +122,9 @@ function placeRedLineStations(){
 	     redLineRequest.send(null);
 	     redLineRequest.onreadystatechange=drawRedLineStations;
      }
-}
+}*/
 
-function drawRedLineStations(){
+/*function drawRedLineStations(){
 	if(redLineRequest.readyState==4&&redLineRequest.status==200){		
 		var allText = redLineRequest.responseText;
 		var allTextLines = [];
@@ -73,37 +132,48 @@ function drawRedLineStations(){
 		var fldHeading = [];
 		fldHeading = allTextLines[0].split(',');
 		for(i=0;i<fldHeading.length;i++){
-			//assumption that csv file will always have these as categories
+			//assumption that RealTimeHeavyRailKeys.csv file will always have these as categories
 			if(fldHeading[i]=="StationName")nameOffset=i;
 			if(fldHeading[i]=="stop_lat")latOffset=i;
 			if(fldHeading[i]=="stop_lon")lonOffset=i;
 			if(fldHeading[i]=="PlatformKey")pkeyOffset=i;
 			if(fldHeading[i]=="Line")lineOffset=i;
+			if(fldHeading[i]=="EndOfLine")eolOffset=i;
+			if(fldHeading[i]=="Branch")branchOffset=i;
+			if(fldHeading[i]=="Direction")dirOffset=i;
+			if(fldHeading[i]=="PlatformOrder")orderOffset=i;
+			//is there a find functions to do this better????
 		}
 		
-		var fldData=[];
+
 		for(i=1; i<allTextLines.length; i++){
-			fldData[i-1] = allTextLines[i].split(',');
+			keyData[i-1] = allTextLines[i].split(',');
 		}
 		
 
 		var pkeyToStationName = new Object();
-		for(i=0;i<fldData.length;i++){
-			if(fldData[i][lineOffset]=="Red"){
-				stationName=fldData[i][nameOffset];
+		for(i=0;i<keyData.length;i++){
+			if(keyData[i][lineOffset]=="Red"){
+				stationName=keyData[i][nameOffset];
+				if(keyData[i][eolOffset]=="TRUE"&&keyData[i][dirOffset]=="NB"){
+					stationOrder[0].push(stationName);
+				}else if(keyData[i][dirOffset]=="SB"{
+					stationOrder[keyData[i][orderOffset]].push(stationName);
+				}
 				//console.log("checking for "+stationName);
 				if(redStations[stationName]==null){
 				//	console.log("initializing "+stationName);					
 					redStations[stationName]=new Object();
-					redStations[stationName].lat=fldData[i][latOffset];
-					redStations[stationName].lon=fldData[i][lonOffset];
-					redStations[stationName].pkeys=[fldData[i][pkeyOffset]];
-					pkeyToStationName[fldData[i][pkeyOffset]]=stationName;
+					redStations[stationName].lat=keyData[i][latOffset];
+					redStations[stationName].lon=keyData[i][lonOffset];
+					redStations[stationName].pkeys=[keyData[i][pkeyOffset]];
+					redStations[stationName].branch=keyData[i][branchOffset];
+					pkeyToStationName[keyData[i][pkeyOffset]]=stationName;
 				//	console.log("end initializing "+stationName);
 				}else{
 				//	console.log("adding to "+stationName);
-					redStations[stationName].pkeys.push(fldData[i][pkeyOffset]);
-					pkeyToStationName[fldData[i][pkeyOffset]]=stationName;
+					redStations[stationName].pkeys.push(keyData[i][pkeyOffset]);
+					pkeyToStationName[keyData[i][pkeyOffset]]=stationName;
 				//	console.log("end adding to "+stationName);
 				//	console.log(redStations[stationName]);
 				}
@@ -111,31 +181,23 @@ function drawRedLineStations(){
 			}
 		}
 		
-		//HAVEN'T YET MODIFIED ANYTHING BELOW THIS!!!
-		//assumption based on csv being static: there are fields called StationName, PlatformKey, stop_lat, stop_lon
+
 		var redLineMarker = new Object();
 		for(key in redStations){
 			var station = redStations[key];
-			redLineMarker[key] = new google.maps.Marker({
-    			position: new google.maps.LatLng(station.lat,station.lon),
-    			title:key
-    		});
-    		//console.log(station+"at "+station.lat+", "+station.lon);
-    		redLineMarker[key].setMap(map);
-    		
-    		google.maps.event.addListener(redLineMarker[key], 'click', function() {
-				map.setZoom(20);
-				map.setCenter(redLineMarker[key].getPosition());
-			});
+			var pos = new google.maps.LatLng(station.lat,station.lon);
+			redLineMarker[key]=createMarker(pos,key)	
+    		redLineMarker[key].setMap(map);   		
 		}
-		
+		drawStationConnections();
 		
 	}
 	if(redLineRequest.status==0||redLineRequest.status==404){	
 		redLineRequest.abort();
 		placeRedLineStations();
 	}
-}
+}*/
+
 
 /*
 var redLineRequest;
