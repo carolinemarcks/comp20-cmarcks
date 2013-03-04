@@ -1,3 +1,21 @@
-html { height: 100% }
-	body { height: 100%; margin: 0px; padding: 0px }
-	#map_canvas { height: 100% }
+html { 
+    height: 100% 
+}
+body { 
+    height: 100%; 
+    margin: 0px; 
+    padding: 0px 
+}
+#map_canvas { 
+    height: 100% 
+}
+td,th,p,.infoheader{
+    font-family:"Palatino Linotype", Palatino, serif
+}
+th {  
+    font-size: large 
+}
+.infoheader {
+    font-size: large;
+    font-weight: bolder
+}
