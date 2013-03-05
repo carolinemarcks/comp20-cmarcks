@@ -8,31 +8,37 @@ var arrivalData;
 var geoLoaded;
 var waldo;
 var carmen;
+//see bottom of file for hardcoded station data
 
-function initialize(){
-  if(!navigator.geolocation) {
-    throw 'Geolocation not supported!';
-  }else {
-    initGlobals();
-    //initialize map to cambridge area
-    var latlng = new google.maps.LatLng(42.37,-71.08);
-    myOptions = {
-      zoom: 12,
-      center: latlng,
-      mapTypeId: google.maps.MapTypeId.ROADMAP
-    };
+function initialize() {
+  try{
+    if(!navigator.geolocation) {
+      throw 'Geolocation not supported!';
+    } else {
+      initGlobals();
+      //initialize map to boston/cambridge area
+      var latlng = new google.maps.LatLng(42.37,-71.08);
+      myOptions = {
+        zoom: 12,
+        center: latlng,
+        mapTypeId: google.maps.MapTypeId.ROADMAP
+      };
 
-    map = new google.maps.Map(document.getElementById("map_canvas"), myOptions);
+      map = new google.maps.Map(document.getElementById("map_canvas"), myOptions);
 
-    // Get current position, and recenter map  
-    navigator.geolocation.getCurrentPosition(placeGeoLoc);
+      // Get current position, and recenter map  
+      navigator.geolocation.getCurrentPosition(placeGeoLoc);
 
-    //set up redline T stops
-    placeRedLineStations();
-    //retrieve and place Carmen and Waldo
-    setCarmenAndWaldo();
-    //retrieve and set train info
-    setArrivalData();
+      //set up redline T stops
+      placeRedLineStations();
+      //retrieve and place Carmen and Waldo
+      setCarmenAndWaldo();
+      //retrieve and set train info
+      setArrivalData();
+    }
+  } 
+  catch (e) {
+    alert("Sorry, something went wrong! Please refresh the page.");
   }
 }
 
@@ -62,7 +68,7 @@ function hdistance(lat1,lon1){
     var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a)); 
     var d = R * c; 
     return d;
-  }
+  };
 }
 
 
@@ -82,7 +88,7 @@ function placeGeoLoc(pos) {
   var mindist=-1;
   var minkey;
   for(key in rlstations){
-      newdist=distToMe(rlstations[key]["stop_lat"],rlstations[key]["stop_lon"]);
+      newdist=distToMe(rlstations[key].stop_lat,rlstations[key].stop_lon);
       if(newdist<mindist||mindist==-1){
           minkey=key;
           mindist=newdist;
@@ -101,9 +107,9 @@ function placeGeoLoc(pos) {
 function placeRedLineStations(){
   for(key in rlstations){
     var station = rlstations[key];
-    var pos = new google.maps.LatLng(station["stop_lat"],station["stop_lon"]);
+    var pos = new google.maps.LatLng(station.stop_lat,station.stop_lon);
     redLineMarkers[key]=createStationMarker(pos,key);
-    redLineMarkers[key]["marker"].setMap(map);   		
+    redLineMarkers[key].marker.setMap(map);   		
   }
   drawStationConnections();
 }
@@ -171,18 +177,18 @@ function infoWindowCallback(){
 }
 
 function setInfo(key){
-  var infoWindow=redLineMarkers[key]["info"];
-  var nbname=rlstations[key]["PlatformKeyNB"];
-  var sbname=rlstations[key]["PlatformKeySB"];
+  var infoWindow=redLineMarkers[key].info;
+  var nbname=rlstations[key].PlatformKeyNB;
+  var sbname=rlstations[key].PlatformKeySB;
   var content="<p class=\"infoheader\">"+key+" STATION:</p><table border=\"1\"><tr><th>Direction</th><th>Predicted Arrival</th></tr>";
   for(i=0; i<arrivalData.length; i++){
-    if(arrivalData[i]["PlatformKey"]==nbname&&arrivalData[i]["InformationType"]=="Predicted"){
-      content+="<tr><td>Alewife (NB)</td><td>"+arrivalData[i]["Time"]+"</td></tr>";
+    if(arrivalData[i].PlatformKey==nbname&&arrivalData[i].InformationType=="Predicted"){
+      content+="<tr><td>Alewife (NB)</td><td>"+arrivalData[i].Time+"</td></tr>";
     }
-    if(arrivalData[i]["PlatformKey"]==sbname&&arrivalData[i]["InformationType"]=="Predicted"){
-      if(arrivalData[i]["Route"]==0)content+="<tr><td>Braintree (SB)</td><td>";
+    if(arrivalData[i].PlatformKey==sbname&&arrivalData[i].InformationType=="Predicted"){
+      if(arrivalData[i].Route==0)content+="<tr><td>Braintree (SB)</td><td>";
       else content+="<tr><td>Ashmont (SB)</td><td>";
-      content+=arrivalData[i]["Time"]+"</td></tr>";        
+      content+=arrivalData[i].Time+"</td></tr>";        
     }
   }
   content+="</table>";
@@ -194,7 +200,7 @@ function drawStationConnections(){
     var rlcoord = [];
     for(j=0; j<connections[i].length; j++){
       var skey=connections[i][j];
-      var pos=new google.maps.LatLng(rlstations[skey]["stop_lat"],rlstations[skey]["stop_lon"]);
+      var pos=new google.maps.LatLng(rlstations[skey].stop_lat,rlstations[skey].stop_lon);
       rlcoord.push(pos);
     }
     var rlPath = new google.maps.Polyline({
@@ -239,8 +245,8 @@ function drawCarmenAndWaldoCallback(){
     var cwdata=JSON.parse(cwRequest.responseText);
     for(i=0; i<cwdata.length;i++){
       var image = 'stop_marker.png';
-      if(cwdata[i]["name"]=="Waldo")waldo=true;
-      if(cwdata[i]["name"]=="Carmen Sandiego")carmen=true;
+      if(cwdata[i].name=="Waldo")waldo=true;
+      if(cwdata[i].name=="Carmen Sandiego")carmen=true;
       var marker=createCWMarker(cwdata[i]);
       marker.setMap(map);
     }
@@ -252,25 +258,25 @@ function drawCarmenAndWaldoCallback(){
 
 function createCWMarker(obj){
   var image;
-  if(obj["name"]=="Waldo"){
+  if(obj.name=="Waldo"){
     image = 'waldo.png';
-  }else if(obj["name"]=="Carmen Sandiego"){
+  }else if(obj.name=="Carmen Sandiego"){
     image = 'carmen.png';
   }
-  var pos=new google.maps.LatLng(obj["loc"]["latitude"],obj["loc"]["longitude"]);
+  var pos=new google.maps.LatLng(obj.loc.latitude,obj.loc.longitude);
   var marker = new google.maps.Marker({
     position: pos,
-    title: obj["name"],
+    title: obj.name,
     icon: image
   });
   var infowindow = new google.maps.InfoWindow({});
-  var note=obj["loc"]["note"];
+  var note=obj.loc.note;
   google.maps.event.addListener(marker, 'click', function() { 
     var content="<p>Note: "+note+"<p>";
     if(geoLoaded==true){
       var distToMe = hdistance(myPos.coords.latitude,myPos.coords.longitude);
-      var mi=distToMe(obj["loc"]["latitude"],obj["loc"]["longitude"]); 
-      content+="<p>"+obj["name"]+" is "+ mi.toFixed(3) +" miles away from you!<p>";
+      var mi=distToMe(obj.loc.latitude,obj.loc.longitude); 
+      content+="<p>"+obj.name+" is "+ mi.toFixed(3) +" miles away from you!<p>";
     }
     infowindow.setContent(content);
     infowindow.open(map, marker);
