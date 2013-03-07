@@ -62,7 +62,7 @@ function drawRow(itemLoc,spriteLoc,verticalOffset){
 }
 function drawFrog(frogstate){
 	ctx.drawImage(img,frogstate[0],frogstate[1],frogstate[2],frogstate[3],frogx,
-		frogy,frogstate[2],frogstate[3]);
+		rowDims[frogRow],frogstate[2],frogstate[3]);
 }
 
 function drawScore(){
@@ -81,8 +81,8 @@ function drawScore(){
 }
 
 function initGameVars(){
-	frogx=180;
-	frogy=500;
+	frogx=13;
+	frogRow=0;
 	numLives=3;
 	isGameOver=false;
 	level=1;
@@ -112,25 +112,27 @@ function initGameVars(){
 	score=0;
 	highscore=0;
 	
+
+	rowDims=[500,465,428,395,360,320,280,235,200,167,130,98,60];
 }
 
 function initSpriteVars(){
 		//all image locs stored by x,y,width,height
-	bigLog=[4,164,184,24];
-	medLog=[4,196,120,24];
-	smallLog=[4,230,90,20];
-	turtle1=[12,406,35,25];
-	truck6=[100,300,54,22];
-	car7=[44,262,38,29];
-	car8=[7,264,33,25];
-	car9_1=[6,298,34,25];
-	car10=[80,262,29,29];
-	frogger=[9,8,332,40];
-	frogsr=[8,332,27,26];//small right
-	frogsu=[10,366,27,25];//small up
+  bigLog=[4,164,184,24];
+  medLog=[4,196,120,24];
+  smallLog=[4,230,90,20];
+  turtle1=[12,406,35,25];
+  truck6=[100,300,54,22];
+  car7=[44,262,38,29];
+  car8=[7,264,33,25];
+  car9_1=[6,298,34,25];
+  car10=[80,262,29,29];
+  frogger=[9,8,332,40];
+  frogsr=[8,332,27,26];//small right
+  frogsu=[10,366,27,25];//small up
 
-	purpleblock=[0,115,399,40];
-	greenblock=[0,54,399,56];
+  purpleblock=[0,115,399,40];
+  greenblock=[0,54,399,56];
 }
 
 
