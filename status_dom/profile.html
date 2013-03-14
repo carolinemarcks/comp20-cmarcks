@@ -22,11 +22,21 @@ function addEvent(){
 
 	element=document.getElementById("status");
 	element.insertBefore(para, element.firstChild);
+	
+	localStorage[new Date().getTime()]=update;
+}
+function loadEvents(){
+  output="";
+  
+  for (key in localStorage){
+    output = "<p>" + localStorage[key] + "</p>\n" + output;
+  }
+  document.getElementById("status").innerHTML=output;
 }
 </script>
 </head>
 
-<body>
+<body onload="loadEvents()">
 	<h1>Fecebook</h1>
 	<div id="nav">
 		<ul>
