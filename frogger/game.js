@@ -102,7 +102,7 @@ function initGameVars(){
 	         {'locs':row11CarLocs,'speed':speedB, 'item':car10,'offset':greenblock[3]+405,'cycle':505}];
 
   carAllowance = 6;
-  innerTurtleAllowance = 10;
+  innerTurtleAllowance = -10;
   outerWaterAllowance = 6;
   
   flyLoc=3;
@@ -189,10 +189,10 @@ function checkGameOver(){
       var overlapped = false;
       for(var i = 0; i < logLocs.length; i++){
         contained = contained || contain (frogsu, frogx, rowData.item, logLocs[i],outerWaterAllowance);
-        if(overlapped && overlap (frogsu, frogx, rowData.item, logLocs[i]),innerTurtleAllowance) contained = true;
+        if(overlapped && overlap (frogsu, frogx, rowData.item, logLocs[i],innerTurtleAllowance)){
+          contained = true;
+        }
         overlapped = overlap (frogsu, frogx, rowData.item, logLocs[i],innerTurtleAllowance);
-      //  console.log("contained:" + contained);
-        //console.log("overlap:" + overlapped);
       }
       collision = !contained;
       break;
@@ -221,12 +221,16 @@ function checkGameOver(){
 
 
 function overlap(dims1, x1, dims2, x2, allowance){//return true if 1 and 2 overlap significantly
+  console.log(x1,x2);
   if (x1 < x2) {
+    if (frogRow==5)console.log("A",x1+dims1[2],x2+allowance,x2+dims2[3],x1)
     if (x1 + dims1[2] > x2 + allowance && x2 + dims2[2] > x1 ) return true;
   }
   else {
+    if (frogRow==5)console.log("B",x2+dims2[2],x1+allowance,x1+dims2[3],x2)
     if (x2 + dims2[2] > x1 + allowance && x1 + dims1[2] > x2) return true;
   }
+  if(frogRow==5)console.log("false");
   return false;
 }
 function contain(dims1, x1, dims2, x2,allowance){//return true if 1 is mostly contained by 2
