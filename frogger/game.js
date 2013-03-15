@@ -81,10 +81,10 @@ function initGameVars(){
   speedA = 2;
   speedB = -2;
   row1LogLocs = [10, 160, 350];
-  row2TurtleLocs = [20, 60, 160, 200, 300, 340, 540, 580];
+  row2TurtleLocs = [20, 55, 160, 195, 300, 335, 540, 575];
   row3LogLocs = [0, 300, 500];
   row4LogLocs = [0, 105, 260];
-  row5TurtleLocs = [-10, 30, 70, 150, 190, 230, 310, 350, 390];
+  row5TurtleLocs = [-10, 25, 60, 150, 185, 220, 310, 345, 380];
   row7CarLocs = [200,370];
   row8CarLocs = [-10,90,320];	
   row9CarLocs = [125,300,380];	
@@ -190,9 +190,9 @@ function checkGameOver(){
   if (collision) {
     isGameOver=true;
     manageDeath();
-  }
-  
+  }  
 }
+
 
 function overlap(dims1, x1, dims2, x2){
   if (x1 < x2) {
@@ -211,4 +211,10 @@ function updateFrogLoc(){
     var speed = rowInfo[frogRow-1].speed;
     frogx += speed;
   }
+}
+function manageWin(){
+  console.log("win");
+}
+function manageDeath(){
+  console.log("die");
 }
