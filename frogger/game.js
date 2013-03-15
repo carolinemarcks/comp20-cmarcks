@@ -240,6 +240,10 @@ function manageWin(){
   if (numWins%5 == 0){
     score += 1000;
     level++;
+    posSpeedA++;
+    posSpeedB++;
+    negSpeedA--;
+    negSpeedB--;
   }
   else score += 50;
   resetFrogger();
