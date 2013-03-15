@@ -1,4 +1,3 @@
-var frogx;
 function start_game() {
   canvas = document.getElementById('game');
   if (canvas.getContext) {
@@ -79,8 +78,11 @@ function initGameVars(){
   level = 1;
   numWins = 0;
   time = 0;
-  speedA = 2;
-  speedB = -2;
+  posSpeedA = 2;
+  posSpeedB = 3;
+  negSpeedA = -2
+  negSpeedB = -3;
+  
   row1LogLocs = [10, 160, 350];
   row2TurtleLocs = [20, 55, 160, 195, 300, 335, 540, 575];
   row3LogLocs = [0, 300, 500];
@@ -91,16 +93,16 @@ function initGameVars(){
   row9CarLocs = [125,300,380];	
   row10CarLocs = [25,165,250];
   row11CarLocs = [0,100,290];
-  rowInfo = [{'locs':row1LogLocs,'speed':speedA,'item':medLog,'offset':greenblock[3]+40,'cycle':530},
-	         {'locs':row2TurtleLocs,'speed':speedB,'item':turtle1,'offset':greenblock[3]+75,'cycle':630},
-	         {'locs':row3LogLocs,'speed':speedA,'item':bigLog,'offset':greenblock[3]+110,'cycle':740},
-	         {'locs':row4LogLocs,'speed':speedA,'item':smallLog,'offset':greenblock[3]+145,'cycle':490},
-	         {'locs':row5TurtleLocs,'speed':speedB,'item':turtle1,'offset':greenblock[3]+180,'cycle':475},
-	         {'locs':row7CarLocs,'speed':speedB,'item':truck6,'offset':greenblock[3]+265,'cycle':465},
-	         {'locs':row8CarLocs,'speed':speedA,'item':car7,'offset':greenblock[3]+300,'cycle':450},
-	         {'locs':row9CarLocs,'speed':speedB,'item':car8,'offset':greenblock[3]+335,'cycle':460},
-	         {'locs':row10CarLocs,'speed':speedA, 'item':car9_1,'offset':greenblock[3]+370,'cycle':495},
-	         {'locs':row11CarLocs,'speed':speedB, 'item':car10,'offset':greenblock[3]+405,'cycle':505}];
+  rowInfo = [{'locs':row1LogLocs,'speed':posSpeedA,'item':medLog,'offset':greenblock[3]+40,'cycle':530},
+	         {'locs':row2TurtleLocs,'speed':negSpeedA,'item':turtle1,'offset':greenblock[3]+75,'cycle':630},
+	         {'locs':row3LogLocs,'speed':posSpeedB,'item':bigLog,'offset':greenblock[3]+110,'cycle':740},
+	         {'locs':row4LogLocs,'speed':posSpeedA,'item':smallLog,'offset':greenblock[3]+145,'cycle':490},
+	         {'locs':row5TurtleLocs,'speed':negSpeedB,'item':turtle1,'offset':greenblock[3]+180,'cycle':475},
+	         {'locs':row7CarLocs,'speed':negSpeedB,'item':truck6,'offset':greenblock[3]+265,'cycle':465},
+	         {'locs':row8CarLocs,'speed':posSpeedB,'item':car7,'offset':greenblock[3]+300,'cycle':450},
+	         {'locs':row9CarLocs,'speed':negSpeedB,'item':car8,'offset':greenblock[3]+335,'cycle':460},
+	         {'locs':row10CarLocs,'speed':posSpeedA, 'item':car9_1,'offset':greenblock[3]+370,'cycle':495},
+	         {'locs':row11CarLocs,'speed':negSpeedA, 'item':car10,'offset':greenblock[3]+405,'cycle':505}];
 
   carAllowance = 6;
   innerTurtleAllowance = -10;
@@ -232,12 +234,17 @@ function updateFrogLoc(){
     frogx += speed;
   }
 }
+
 function manageWin(){
   numWins++;
-  if (numWins%5 == 0) score += 1000;
+  if (numWins%5 == 0){
+    score += 1000;
+    level++;
+  }
   else score += 50;
   resetFrogger();
 }
+
 function manageDeath(){
   numLives--;
   if(numLives == 0){
@@ -247,8 +254,7 @@ function manageDeath(){
       localStorage["frogger_high"] = score;
     }
   }
-  resetFrogger();
-  
+  resetFrogger(); 
 }
 function resetFrogger(){
   frogx = 190;//190;
