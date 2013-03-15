@@ -201,11 +201,10 @@ function checkGameOver(){
       break;
   }
   
-  if (collision) {
+  if (collision || frogx < 0 || frogx > 380){
     manageDeath();
   }  
 }
-
 
 function overlap(dims1, x1, dims2, x2, allowance){//return true if 1 and 2 overlap significantly
   if (x1 < x2) {
