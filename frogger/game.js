@@ -1,6 +1,5 @@
-
+var frogx;
 function start_game() {
-
   canvas = document.getElementById('game');
   if (canvas.getContext) {
     ctx = canvas.getContext('2d');
@@ -75,8 +74,8 @@ function drawScore(){
 }
 
 function initGameVars(){
-  frogx = 13;
-  frogRow = 0;
+  frogx = 190;
+  frogRow = 12;
   numLives = 3;
   isGameOver = false;
   level = 1;
@@ -88,28 +87,28 @@ function initGameVars(){
   row3LogLocs = [0, 300, 500];
   row4LogLocs = [0, 105, 260];
   row5TurtleLocs = [-10, 30, 70, 150, 190, 230, 310, 350, 390];
-  row6CarLocs = [200,370];
-  row7CarLocs = [-10,90,320];	
-  row8CarLocs = [125,300,380];	
-  row9CarLocs = [25,165,250];
-  row10CarLocs = [0,100,290];
+  row7CarLocs = [200,370];
+  row8CarLocs = [-10,90,320];	
+  row9CarLocs = [125,300,380];	
+  row10CarLocs = [25,165,250];
+  row11CarLocs = [0,100,290];
   rowInfo = [{'locs':row1LogLocs,'speed':speedA,'item':medLog,'offset':greenblock[3]+40,'cycle':530},
 	         {'locs':row2TurtleLocs,'speed':speedB,'item':turtle1,'offset':greenblock[3]+75,'cycle':630},
 	         {'locs':row3LogLocs,'speed':speedA,'item':bigLog,'offset':greenblock[3]+110,'cycle':740},
 	         {'locs':row4LogLocs,'speed':speedA,'item':smallLog,'offset':greenblock[3]+145,'cycle':490},
 	         {'locs':row5TurtleLocs,'speed':speedB,'item':turtle1,'offset':greenblock[3]+180,'cycle':475},
-	         {'locs':row6CarLocs,'speed':speedB,'item':truck6,'offset':greenblock[3]+265,'cycle':465},
-	         {'locs':row7CarLocs,'speed':speedA,'item':car7,'offset':greenblock[3]+300,'cycle':450},
-	         {'locs':row8CarLocs,'speed':speedB,'item':car8,'offset':greenblock[3]+335,'cycle':460},
-	         {'locs':row9CarLocs,'speed':speedA, 'item':car9_1,'offset':greenblock[3]+370,'cycle':495},
-	         {'locs':row10CarLocs,'speed':speedB, 'item':car10,'offset':greenblock[3]+405,'cycle':505}];
+	         {'locs':row7CarLocs,'speed':speedB,'item':truck6,'offset':greenblock[3]+265,'cycle':465},
+	         {'locs':row8CarLocs,'speed':speedA,'item':car7,'offset':greenblock[3]+300,'cycle':450},
+	         {'locs':row9CarLocs,'speed':speedB,'item':car8,'offset':greenblock[3]+335,'cycle':460},
+	         {'locs':row10CarLocs,'speed':speedA, 'item':car9_1,'offset':greenblock[3]+370,'cycle':495},
+	         {'locs':row11CarLocs,'speed':speedB, 'item':car10,'offset':greenblock[3]+405,'cycle':505}];
 	         
   flyLoc=3;
   flyVisibile=false;
   score=0;
   highscore=0;
   
-  rowDims=[500,465,428,395,360,320,280,235,200,167,130,98,60];
+  rowDims = [60,98,130,167,200,235,280,320,360,395,428,465,500];
 }
 
 function initSpriteVars(){
@@ -143,6 +142,28 @@ function updateBoard(){
       locs[j]+=rowData.speed;
     }
   }
+  collisionDetection();
   drawBoard()
 }
 
+document.addEventListener("keydown", function(event) {
+  if (event.keyCode == 38) {//up
+    if (frogRow > 0) frogRow--;
+  }
+  if (event.keyCode == 40) {//down
+    if (frogRow < 12) frogRow++;
+  }
+  if (event.keyCode == 39) {
+    if (frogx < 370) frogx += 20;
+    if(frogx > 370) frogx = 370;
+  }
+  if (event.keyCode == 37) {
+    if (frogx > 8) frogx -= 20;
+    if (frogx < 8) frogx = 8;
+  }
+});
+
+function collisionDetection(){
+  var collision = false;
+  
+}
