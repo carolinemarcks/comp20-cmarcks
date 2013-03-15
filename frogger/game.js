@@ -168,25 +168,29 @@ document.addEventListener("keydown", function(event) {
 
 function checkGameOver(){
   var collision = false;
-  if (frogRow > 0 && frogRow < 6){
-    console.log("detect water");
-  } else if (frogRow > 6 && frogRow < 12){
-    var rowData = rowInfo[frogRow-2];
-    var carLocs = rowData.locs;
-    for(var i = 0; i < carLocs.length; i++){
-      collision = collision || overlap (frogsu, frogx, rowData.item, carLocs[i]);
-    }
-    //console.log("detect car");
-  } else if (frogRow == 0){
-    isGameOver = true
-    var win;
-    for (var i = 0; i < winLocs.length; i++){
-      win = win || (frogx > winLocs[i][0] && frogx < winLocs[i][1]);
-    }
-    if (win) manageWin();
-    else collision = true
+  switch(frogRow){
+    case 1,2,3,4,5:
+      console.log("detect water")
+      break;
+    case 7,8,9,10,11:
+      console.log("detect car");
+      var rowData = rowInfo[frogRow-2];
+      var carLocs = rowData.locs;
+      for(var i = 0; i < carLocs.length; i++){
+        collision = collision || overlap (frogsu, frogx, rowData.item, carLocs[i]);
+      }
+      break;
+    case 0:
+      console.log("end");
+      isGameOver = true
+      var win;
+      for (var i = 0; i < winLocs.length; i++){
+        win = win || (frogx > winLocs[i][0] && frogx < winLocs[i][1]);
+      }
+      if (win) manageWin();
+      else collision = true
+      break;
   }
-  
   if (collision) {
     isGameOver=true;
     manageDeath();
