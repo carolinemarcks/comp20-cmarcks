@@ -169,11 +169,19 @@ document.addEventListener("keydown", function(event) {
 function checkGameOver(){
   var collision = false;
   switch(frogRow){
-    case 1,2,3,4,5:
-      console.log("detect water")
+    case 1: case 3: case 4:
+      var rowData = rowInfo[frogRow-1];
+      var logLocs = rowData.locs;
+      var contained = false;
+      for(var i = 0; i < logLocs.length; i++){
+        contained = contained || contain (frogsu, frogx, rowData.item, logLocs[i]);
+      }
+      collision = !contained;
       break;
-    case 7,8,9,10,11:
-      console.log("detect car");
+    case 2: case 5:
+      console.log("detect turtle");
+      break;
+    case 7: case 8: case 9: case 10: case 11:
       var rowData = rowInfo[frogRow-2];
       var carLocs = rowData.locs;
       for(var i = 0; i < carLocs.length; i++){
@@ -181,7 +189,6 @@ function checkGameOver(){
       }
       break;
     case 0:
-      console.log("end");
       isGameOver = true
       var win;
       for (var i = 0; i < winLocs.length; i++){
@@ -198,7 +205,7 @@ function checkGameOver(){
 }
 
 
-function overlap(dims1, x1, dims2, x2){
+function overlap(dims1, x1, dims2, x2){//return true if 1 and 2 overlap significantly
   if (x1 < x2) {
     if (x1 + dims1[2] > x2 + 6 && x2 + dims2[2] > x1 ) return true;
   }
@@ -207,6 +214,13 @@ function overlap(dims1, x1, dims2, x2){
   }
   return false;
 }
+function contain(dims1, x1, dims2, x2){//return true if 1 is mostly contained by 2
+  if (x1 + 6 > x2){
+    if (x1 + dims1[2] < x2 + dims2[2] + 6) return true;
+  }
+  return false;
+}
+
 function updateGame(){
   if (!isGameOver) updateBoard();
 }
