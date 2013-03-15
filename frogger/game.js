@@ -9,9 +9,7 @@ function start_game() {
     initSpriteVars();
     initGameVars();
     img.onload=drawBoard;
-    
-    setInterval(updateBoard, 40);
-   // updateBoard();
+    setInterval(updateGame, 40);
   }else {
     alert('Sorry, canvas is not supported on your browser!');
   }
@@ -74,8 +72,8 @@ function drawScore(){
 }
 
 function initGameVars(){
-  frogx = 190;
-  frogRow = 12;
+  frogx = 190;//190;
+  frogRow = 12;//12;
   numLives = 3;
   isGameOver = false;
   level = 1;
@@ -109,6 +107,7 @@ function initGameVars(){
   highscore=0;
   
   rowDims = [60,98,130,167,200,235,280,320,360,395,428,465,500];
+  winLocs = [[7,20],[92,104],[177,190],[260,275],[347,358]];
 }
 
 function initSpriteVars(){
@@ -118,7 +117,7 @@ function initSpriteVars(){
   smallLog=[4,230,90,20];
   turtle1=[12,406,35,25];
   truck6=[100,300,54,22];
-  car7=[44,262,38,29];
+  car7=[44,262,32,29];
   car8=[7,264,33,25];
   car9_1=[6,298,34,25];
   car10=[80,262,29,29];
@@ -142,53 +141,74 @@ function updateBoard(){
       locs[j]+=rowData.speed;
     }
   }
-  collisionDetection();
-  drawBoard()
+  updateFrogLoc();
+  drawBoard();
+  checkGameOver();
 }
 
 document.addEventListener("keydown", function(event) {
-  if (event.keyCode == 38) {//up
-    if (frogRow > 0) frogRow--;
-  }
-  if (event.keyCode == 40) {//down
-    if (frogRow < 12) frogRow++;
-  }
-  if (event.keyCode == 39) {
-    if (frogx < 370) frogx += 20;
-    if(frogx > 370) frogx = 370;
-  }
-  if (event.keyCode == 37) {
-    if (frogx > 8) frogx -= 20;
-    if (frogx < 8) frogx = 8;
+  event.preventDefault();
+  switch(event.keyCode){
+    case 37: 
+      if (frogx > 8) frogx -= 20;
+      if (frogx < 8) frogx = 8;
+      break;
+    case 38:
+      if (frogRow > 0) frogRow--;
+      break;
+    case 39:
+      if (frogx < 370) frogx += 20;
+      if(frogx > 370) frogx = 370;
+      break;
+    case 40:
+      if (frogRow < 12) frogRow++;
+      break;
   }
 });
 
-function collisionDetection(){
+function checkGameOver(){
   var collision = false;
   if (frogRow > 0 && frogRow < 6){
     console.log("detect water");
-  }
-  if (frogRow > 6 && frogRow < 12){
+  } else if (frogRow > 6 && frogRow < 12){
     var rowData = rowInfo[frogRow-2];
     var carLocs = rowData.locs;
     for(var i = 0; i < carLocs.length; i++){
       collision = collision || overlap (frogsu, frogx, rowData.item, carLocs[i]);
     }
     //console.log("detect car");
+  } else if (frogRow == 0){
+    isGameOver = true
+    var win;
+    for (var i = 0; i < winLocs.length; i++){
+      win = win || (frogx > winLocs[i][0] && frogx < winLocs[i][1]);
+    }
+    if (win) manageWin();
+    else collision = true
   }
-  if (frogRow == 0){
-    console.log("detect jut");
+  
+  if (collision) {
+    isGameOver=true;
+    manageDeath();
   }
-  if (collision) alert("collision!");
+  
 }
 
 function overlap(dims1, x1, dims2, x2){
   if (x1 < x2) {
-    if (x1 + dims1[2] > x2 && x2 + dims2[2] > x1) return true;
+    if (x1 + dims1[2] > x2 + 6 && x2 + dims2[2] > x1 ) return true;
   }
   else {
-    if (x2 + dims2[2] > x1 && x1 + dims1[2] > x2) return true;
+    if (x2 + dims2[2] > x1 + 6 && x1 + dims1[2] > x2) return true;
   }
   return false;
-  
+}
+function updateGame(){
+  if (!isGameOver) updateBoard();
+}
+function updateFrogLoc(){
+  if (frogRow > 0 && frogRow < 6){
+    var speed = rowInfo[frogRow-1].speed;
+    frogx += speed;
+  }
 }
