@@ -78,10 +78,7 @@ function initGameVars(){
   level = 1;
   numWins = 0;
   time = 0;
-  posSpeedA = 2;
-  posSpeedB = 3;
-  negSpeedA = -2
-  negSpeedB = -3;
+  speeds=[2,3,-2,-3];
   
   row1LogLocs = [10, 160, 350];
   row2TurtleLocs = [20, 55, 160, 195, 300, 335, 540, 575];
@@ -93,16 +90,16 @@ function initGameVars(){
   row9CarLocs = [125,300,380];	
   row10CarLocs = [25,165,250];
   row11CarLocs = [0,100,290];
-  rowInfo = [{'locs':row1LogLocs,'speed':posSpeedA,'item':medLog,'offset':greenblock[3]+40,'cycle':530},
-	         {'locs':row2TurtleLocs,'speed':negSpeedA,'item':turtle1,'offset':greenblock[3]+75,'cycle':630},
-	         {'locs':row3LogLocs,'speed':posSpeedB,'item':bigLog,'offset':greenblock[3]+110,'cycle':740},
-	         {'locs':row4LogLocs,'speed':posSpeedA,'item':smallLog,'offset':greenblock[3]+145,'cycle':490},
-	         {'locs':row5TurtleLocs,'speed':negSpeedB,'item':turtle1,'offset':greenblock[3]+180,'cycle':475},
-	         {'locs':row7CarLocs,'speed':negSpeedB,'item':truck6,'offset':greenblock[3]+265,'cycle':465},
-	         {'locs':row8CarLocs,'speed':posSpeedB,'item':car7,'offset':greenblock[3]+300,'cycle':450},
-	         {'locs':row9CarLocs,'speed':negSpeedB,'item':car8,'offset':greenblock[3]+335,'cycle':460},
-	         {'locs':row10CarLocs,'speed':posSpeedA, 'item':car9_1,'offset':greenblock[3]+370,'cycle':495},
-	         {'locs':row11CarLocs,'speed':negSpeedA, 'item':car10,'offset':greenblock[3]+405,'cycle':505}];
+  rowInfo = [{'locs':row1LogLocs,'speed':0,'item':medLog,'offset':greenblock[3]+40,'cycle':530},
+	         {'locs':row2TurtleLocs,'speed':2,'item':turtle1,'offset':greenblock[3]+75,'cycle':630},
+	         {'locs':row3LogLocs,'speed':1,'item':bigLog,'offset':greenblock[3]+110,'cycle':740},
+	         {'locs':row4LogLocs,'speed':0,'item':smallLog,'offset':greenblock[3]+145,'cycle':490},
+	         {'locs':row5TurtleLocs,'speed':3,'item':turtle1,'offset':greenblock[3]+180,'cycle':475},
+	         {'locs':row7CarLocs,'speed':2,'item':truck6,'offset':greenblock[3]+265,'cycle':465},
+	         {'locs':row8CarLocs,'speed':1,'item':car7,'offset':greenblock[3]+300,'cycle':450},
+	         {'locs':row9CarLocs,'speed':3,'item':car8,'offset':greenblock[3]+335,'cycle':460},
+	         {'locs':row10CarLocs,'speed':0, 'item':car9_1,'offset':greenblock[3]+370,'cycle':495},
+	         {'locs':row11CarLocs,'speed':2, 'item':car10,'offset':greenblock[3]+405,'cycle':505}];
 
   carAllowance = 6;
   innerTurtleAllowance = -10;
@@ -145,9 +142,9 @@ function updateBoard(){
     for( var j = 0; j < locs.length; j++){
       var cycle = rowData.cycle;
       var width = rowData.item[2];
-      if (rowData.speed > 0 && 399 < locs[j]) locs[j] -= (cycle);
-      if (rowData.speed < 0 && 0 - width > locs[j]) locs[j] += (cycle);
-      locs[j]+=rowData.speed;
+      if (speeds[rowData.speed] > 0 && 399 < locs[j]) locs[j] -= (cycle);
+      if (speeds[rowData.speed] < 0 && 0 - width > locs[j]) locs[j] += (cycle);
+      locs[j]+=speeds[rowData.speed];
     }
   }
   updateFrogLoc();
@@ -230,20 +227,24 @@ function updateGame(){
 }
 function updateFrogLoc(){
   if (frogRow > 0 && frogRow < 6){
-    var speed = rowInfo[frogRow-1].speed;
+    var speed = speeds[rowInfo[frogRow-1].speed];
     frogx += speed;
   }
 }
 
 function manageWin(){
   numWins++;
-  if (numWins%5 == 0){
+  if (numWins%1 == 0){
     score += 1000;
     level++;
-    posSpeedA++;
-    posSpeedB++;
-    negSpeedA--;
-    negSpeedB--;
+    speeds[0]++;
+    speeds[1]++;
+    speeds[2]--;
+    speeds[3]--;
+    speeds[0]++;
+    speeds[1]++;
+    speeds[2]--;
+    speeds[3]--;
   }
   else score += 50;
   resetFrogger();
@@ -302,7 +303,6 @@ function collisionInCarRow(){
 function updateScore(){
   if (forwardMove == true){
     forwardMove = false;
-    console.log(rowProgress,frogRow);
     if (rowProgress > frogRow){
       rowProgress--;
       score += 10;
