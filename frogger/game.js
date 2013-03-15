@@ -1,123 +1,119 @@
 
-function start_game(){	
-	
-	canvas = document.getElementById('game');
-    if (canvas.getContext) {
-    	ctx = canvas.getContext('2d');
-    	ctx.clearRect(0, 0, 565, 399); // clear the screen
-        img= new Image();
-        img.src="assets/frogger_sprites.png";
-        initGameVars();
-        initSpriteVars();
-        img.onload=drawBoard;
-           	
-    }else {
-        alert('Sorry, canvas is not supported on your browser!');
-    }
-	
+function start_game() {
+
+  canvas = document.getElementById('game');
+  if (canvas.getContext) {
+    ctx = canvas.getContext('2d');
+    ctx.clearRect(0, 0, 565, 399); // clear the screen
+    img = new Image();
+    img.src="assets/frogger_sprites.png";
+    initSpriteVars();
+    initGameVars();
+    img.onload=drawBoard;
+    
+    setInterval(updateBoard, 40);
+   // updateBoard();
+  }else {
+    alert('Sorry, canvas is not supported on your browser!');
+  }
 }
 
 function drawBoard(){
-	ctx.fillStyle="#191970";
-	ctx.fillRect(0,0,399,280);
-	ctx.fillStyle="#000000";
-	ctx.fillRect(0,280,399,290);
-	
-	//banner
-	ctx.drawImage(img,frogger[0],frogger[1],frogger[2],frogger[3],0,0,frogger[2],
-		frogger[3]);
+  ctx.fillStyle = "#191970";
+  ctx.fillRect(0,0,399,280);
+  ctx.fillStyle = "#000000";
+  ctx.fillRect(0,280,399,290);
+
+  //banner
+  ctx.drawImage(img,frogger[0],frogger[1],frogger[2],frogger[3],0,0,frogger[2],
+    frogger[3]);
 	//bottom purple block
 	ctx.drawImage(img,purpleblock[0],purpleblock[1],purpleblock[2],purpleblock[3],
-		0,605-purpleblock[1],purpleblock[2],purpleblock[3]);
-	//middle purple block
-	ctx.drawImage(img,purpleblock[0],purpleblock[1],purpleblock[2],purpleblock[3],
-		0,greenblock[3]+215,purpleblock[2],purpleblock[3]);
-	//top green block
-	ctx.drawImage(img,greenblock[0],greenblock[1],greenblock[2],greenblock[3],0,40,
-		greenblock[2],greenblock[3]);
-	
-	drawScore();
-	
-	drawRow(row1LogLocs,medLog,greenblock[3]+40);
-	drawRow(row2TurtleLocs,turtle1,greenblock[3]+75);
-	drawRow(row3LogLocs,bigLog,greenblock[3]+110);
-	drawRow(row4LogLocs,smallLog,greenblock[3]+145);
-	drawRow(row5TurtleLocs,turtle1,greenblock[3]+180);
-	drawRow(row6CarLocs,truck6,greenblock[3]+265);
-	drawRow(row7CarLocs,car7,greenblock[3]+300);
-	drawRow(row8CarLocs,car8,greenblock[3]+335);
-	drawRow(row9CarLocs,car9_1,greenblock[3]+370);
-	drawRow(row10CarLocs,car10,greenblock[3]+405);
-	
-	drawFrog(frogsu);
+	  0,605-purpleblock[1],purpleblock[2],purpleblock[3]);
+  //middle purple block
+  ctx.drawImage(img,purpleblock[0],purpleblock[1],purpleblock[2],purpleblock[3],
+    0,greenblock[3]+215,purpleblock[2],purpleblock[3]);
+  //top green block
+  ctx.drawImage(img,greenblock[0],greenblock[1],greenblock[2],greenblock[3],0,40,
+    greenblock[2],greenblock[3]);
+
+  drawScore();
+
+  for(var i = 0; i < rowInfo.length; i++){
+	  var rowData = rowInfo[i];
+  	drawRow(rowData.locs, rowData.item, rowData.offset);
+  }
+  drawFrog(frogsu);
 }
 
 function drawRow(itemLoc,spriteLoc,verticalOffset){
-	for(i=0;i<itemLoc.length;i++){
-		if(itemLoc[i]>(0-spriteLoc[2])&&itemLoc[i]<399){
-			ctx.drawImage(img,spriteLoc[0],spriteLoc[1],spriteLoc[2],spriteLoc[3],
-				itemLoc[i],verticalOffset,spriteLoc[2],spriteLoc[3]);
-		}
-	}
+  for(var i = 0; i < itemLoc.length; i++){ 
+    if(itemLoc[i] > (0-spriteLoc[2]) && itemLoc[i] < 399){
+      ctx.drawImage(img,spriteLoc[0],spriteLoc[1],spriteLoc[2],spriteLoc[3],
+      itemLoc[i],verticalOffset,spriteLoc[2],spriteLoc[3]);
+    }
+  }
 }
 function drawFrog(frogstate){
-	ctx.drawImage(img,frogstate[0],frogstate[1],frogstate[2],frogstate[3],frogx,
-		rowDims[frogRow],frogstate[2],frogstate[3]);
+  ctx.drawImage(img,frogstate[0],frogstate[1],frogstate[2],frogstate[3],frogx,
+    rowDims[frogRow],frogstate[2],frogstate[3]);
 }
 
 function drawScore(){
-	frogLifex=0;
-	for(i=0; i<numLives; i++){
-		ctx.drawImage(img,frogsr[0],frogsr[1],frogsr[2],frogsr[3],frogLifex,530,
-			frogsr[2]/1.75,frogsr[3]/1.75);
-		frogLifex+=(frogsr[2]/1.75);
-	}
-	ctx.fillStyle = "#7CFC00";
-	ctx.font="16pt Arial";
-	ctx.fillText("Level:"+level,80,545);
-	ctx.font="10pt Arial";
-	ctx.fillText("Score:"+score, 5, 560);
-	ctx.fillText("Highcore:"+highscore, 80, 560);
+  frogLifex = 0;
+  for(var i = 0; i < numLives; i++){
+    ctx.drawImage(img,frogsr[0],frogsr[1],frogsr[2],frogsr[3],frogLifex,530,
+      frogsr[2]/1.75,frogsr[3]/1.75);
+    frogLifex += (frogsr[2]/1.75);
+  }
+  ctx.fillStyle = "#7CFC00";
+  ctx.font = "16pt Arial";
+  ctx.fillText("Level:"+level,80,545);
+  ctx.font = "10pt Arial";
+  ctx.fillText("Score:"+score, 5, 560);
+  ctx.fillText("Highcore:"+highscore, 80, 560);
 }
 
 function initGameVars(){
-	frogx=13;
-	frogRow=0;
-	numLives=3;
-	isGameOver=false;
-	level=1;
-	time=0;
-	row1LogLocs=[10, 160, 350];
-	row1speed=1;
-	row2TurtleLocs=[20, 60, 160, 200, 300, 340, 540, 580];
-	row2speed=1;
-	row3LogLocs=[0, 300, 700];
-	row3speed=1;
-	row4LogLocs=[0, 105, 260];
-	row4speed=1;
-	row5TurtleLocs=[-10, 30, 70, 150, 190, 230, 310, 350, 390];
-	row5speed=1;
-	row6CarLocs=[200,370];
-	row6speed=1;
-	row7CarLocs=[-10,90,320];	
-	row7speed=1;
-	row8CarLocs=[125,300,380];	
-	row8speed=1;
-	row9CarLocs=[25,165,250];
-	row9speed=1;
-	row10CarLocs=[0,100,290];
-	row10speed=1;
-	flyLoc=3;
-	flyVisibile=false;
-	score=0;
-	highscore=0;
-	
-
-	rowDims=[500,465,428,395,360,320,280,235,200,167,130,98,60];
+  frogx = 13;
+  frogRow = 0;
+  numLives = 3;
+  isGameOver = false;
+  level = 1;
+  time = 0;
+  speedA = 2;
+  speedB = -2;
+  row1LogLocs = [10, 160, 350];
+  row2TurtleLocs = [20, 60, 160, 200, 300, 340, 540, 580];
+  row3LogLocs = [0, 300, 500];
+  row4LogLocs = [0, 105, 260];
+  row5TurtleLocs = [-10, 30, 70, 150, 190, 230, 310, 350, 390];
+  row6CarLocs = [200,370];
+  row7CarLocs = [-10,90,320];	
+  row8CarLocs = [125,300,380];	
+  row9CarLocs = [25,165,250];
+  row10CarLocs = [0,100,290];
+  rowInfo = [{'locs':row1LogLocs,'speed':speedA,'item':medLog,'offset':greenblock[3]+40,'cycle':530},
+	         {'locs':row2TurtleLocs,'speed':speedB,'item':turtle1,'offset':greenblock[3]+75,'cycle':630},
+	         {'locs':row3LogLocs,'speed':speedA,'item':bigLog,'offset':greenblock[3]+110,'cycle':740},
+	         {'locs':row4LogLocs,'speed':speedA,'item':smallLog,'offset':greenblock[3]+145,'cycle':490},
+	         {'locs':row5TurtleLocs,'speed':speedB,'item':turtle1,'offset':greenblock[3]+180,'cycle':475},
+	         {'locs':row6CarLocs,'speed':speedB,'item':truck6,'offset':greenblock[3]+265,'cycle':465},
+	         {'locs':row7CarLocs,'speed':speedA,'item':car7,'offset':greenblock[3]+300,'cycle':450},
+	         {'locs':row8CarLocs,'speed':speedB,'item':car8,'offset':greenblock[3]+335,'cycle':460},
+	         {'locs':row9CarLocs,'speed':speedA, 'item':car9_1,'offset':greenblock[3]+370,'cycle':495},
+	         {'locs':row10CarLocs,'speed':speedB, 'item':car10,'offset':greenblock[3]+405,'cycle':505}];
+	         
+  flyLoc=3;
+  flyVisibile=false;
+  score=0;
+  highscore=0;
+  
+  rowDims=[500,465,428,395,360,320,280,235,200,167,130,98,60];
 }
 
 function initSpriteVars(){
-		//all image locs stored by x,y,width,height
+  //all image locs stored by x,y,width,height
   bigLog=[4,164,184,24];
   medLog=[4,196,120,24];
   smallLog=[4,230,90,20];
@@ -135,4 +131,18 @@ function initSpriteVars(){
   greenblock=[0,54,399,56];
 }
 
+function updateBoard(){
+  for (var i = 0; i < rowInfo.length; i++){
+    var rowData = rowInfo[i];
+    var locs = rowData.locs;
+    for( var j = 0; j < locs.length; j++){
+      var cycle = rowData.cycle;
+      var width = rowData.item[2];
+      if (rowData.speed > 0 && 399 < locs[j]) locs[j] -= (cycle);
+      if (rowData.speed < 0 && 0 - width > locs[j]) locs[j] += (cycle);
+      locs[j]+=rowData.speed;
+    }
+  }
+  drawBoard()
+}
 
