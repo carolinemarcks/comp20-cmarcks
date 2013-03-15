@@ -100,7 +100,11 @@ function initGameVars(){
 	         {'locs':row9CarLocs,'speed':speedB,'item':car8,'offset':greenblock[3]+335,'cycle':460},
 	         {'locs':row10CarLocs,'speed':speedA, 'item':car9_1,'offset':greenblock[3]+370,'cycle':495},
 	         {'locs':row11CarLocs,'speed':speedB, 'item':car10,'offset':greenblock[3]+405,'cycle':505}];
-	         
+
+  carAllowance = 6;
+  innerTurtleAllowance = 10;
+  outerWaterAllowance = 6;
+  
   flyLoc=3;
   flyVisibile=false;
   score=0;
@@ -174,18 +178,29 @@ function checkGameOver(){
       var logLocs = rowData.locs;
       var contained = false;
       for(var i = 0; i < logLocs.length; i++){
-        contained = contained || contain (frogsu, frogx, rowData.item, logLocs[i]);
+        contained = contained || contain (frogsu, frogx, rowData.item, logLocs[i], outerWaterAllowance);
       }
       collision = !contained;
       break;
     case 2: case 5:
-      console.log("detect turtle");
+      var rowData = rowInfo[frogRow-1];
+      var logLocs = rowData.locs;
+      var contained = false;
+      var overlapped = false;
+      for(var i = 0; i < logLocs.length; i++){
+        contained = contained || contain (frogsu, frogx, rowData.item, logLocs[i],outerWaterAllowance);
+        if(overlapped && overlap (frogsu, frogx, rowData.item, logLocs[i]),innerTurtleAllowance) contained = true;
+        overlapped = overlap (frogsu, frogx, rowData.item, logLocs[i],innerTurtleAllowance);
+      //  console.log("contained:" + contained);
+        //console.log("overlap:" + overlapped);
+      }
+      collision = !contained;
       break;
     case 7: case 8: case 9: case 10: case 11:
       var rowData = rowInfo[frogRow-2];
       var carLocs = rowData.locs;
       for(var i = 0; i < carLocs.length; i++){
-        collision = collision || overlap (frogsu, frogx, rowData.item, carLocs[i]);
+        collision = collision || overlap (frogsu, frogx, rowData.item, carLocs[i],carAllowance);
       }
       break;
     case 0:
@@ -205,18 +220,18 @@ function checkGameOver(){
 }
 
 
-function overlap(dims1, x1, dims2, x2){//return true if 1 and 2 overlap significantly
+function overlap(dims1, x1, dims2, x2, allowance){//return true if 1 and 2 overlap significantly
   if (x1 < x2) {
-    if (x1 + dims1[2] > x2 + 6 && x2 + dims2[2] > x1 ) return true;
+    if (x1 + dims1[2] > x2 + allowance && x2 + dims2[2] > x1 ) return true;
   }
   else {
-    if (x2 + dims2[2] > x1 + 6 && x1 + dims1[2] > x2) return true;
+    if (x2 + dims2[2] > x1 + allowance && x1 + dims1[2] > x2) return true;
   }
   return false;
 }
-function contain(dims1, x1, dims2, x2){//return true if 1 is mostly contained by 2
-  if (x1 + 6 > x2){
-    if (x1 + dims1[2] < x2 + dims2[2] + 6) return true;
+function contain(dims1, x1, dims2, x2,allowance){//return true if 1 is mostly contained by 2
+  if (x1 + allowance > x2){
+    if (x1 + dims1[2] < x2 + dims2[2] + allowance) return true;
   }
   return false;
 }
