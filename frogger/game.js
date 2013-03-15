@@ -165,5 +165,30 @@ document.addEventListener("keydown", function(event) {
 
 function collisionDetection(){
   var collision = false;
+  if (frogRow > 0 && frogRow < 6){
+    console.log("detect water");
+  }
+  if (frogRow > 6 && frogRow < 12){
+    var rowData = rowInfo[frogRow-2];
+    var carLocs = rowData.locs;
+    for(var i = 0; i < carLocs.length; i++){
+      collision = collision || overlap (frogsu, frogx, rowData.item, carLocs[i]);
+    }
+    //console.log("detect car");
+  }
+  if (frogRow == 0){
+    console.log("detect jut");
+  }
+  if (collision) alert("collision!");
+}
+
+function overlap(dims1, x1, dims2, x2){
+  if (x1 < x2) {
+    if (x1 + dims1[2] > x2 && x2 + dims2[2] > x1) return true;
+  }
+  else {
+    if (x2 + dims2[2] > x1 && x1 + dims1[2] > x2) return true;
+  }
+  return false;
   
 }
