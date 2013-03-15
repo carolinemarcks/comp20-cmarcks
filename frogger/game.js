@@ -8,7 +8,7 @@ function start_game() {
     initSpriteVars();
     initGameVars();
     img.onload=drawBoard;
-    setInterval(updateGame, 40);
+    setInterval(updateGame, 50);
   }else {
     alert('Sorry, canvas is not supported on your browser!');
   }
@@ -234,7 +234,7 @@ function updateFrogLoc(){
 
 function manageWin(){
   numWins++;
-  if (numWins%1 == 0){
+  if (numWins%5 == 0){
     score += 1000;
     level++;
     speeds[0]++;
