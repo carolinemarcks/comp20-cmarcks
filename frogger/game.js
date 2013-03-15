@@ -77,6 +77,7 @@ function initGameVars(){
   numLives = 3;
   isGameOver = false;
   level = 1;
+  numWins = 0;
   time = 0;
   speedA = 2;
   speedB = -2;
@@ -105,11 +106,13 @@ function initGameVars(){
   innerTurtleAllowance = -10;
   outerWaterAllowance = 6;
   
-  flyLoc=3;
-  flyVisibile=false;
-  score=0;
-  highscore=0;
-  
+  flyLoc = 3;
+  flyVisibile = false;
+  score = 0;
+  highscore = localStorage["frogger_high"]
+  if (highscore == null)highscore = 0;
+  rowProgress = 12;
+  forwardMove = false;
   rowDims = [60,98,130,167,200,235,280,320,360,395,428,465,500];
   winLocs = [[7,20],[92,104],[177,190],[260,275],[347,358]];
 }
@@ -146,22 +149,25 @@ function updateBoard(){
     }
   }
   updateFrogLoc();
-  drawBoard();
   checkGameOver();
+  updateScore();
+  drawBoard();
+  
 }
 
 document.addEventListener("keydown", function(event) {
   event.preventDefault();
   switch(event.keyCode){
     case 37: 
-      if (frogx > 8) frogx -= 20;
+      if (frogx > 8) frogx -= 30;
       if (frogx < 8) frogx = 8;
       break;
     case 38:
+      forwardMove = true;
       if (frogRow > 0) frogRow--;
       break;
     case 39:
-      if (frogx < 370) frogx += 20;
+      if (frogx < 370) frogx += 30;
       if(frogx > 370) frogx = 370;
       break;
     case 40:
@@ -174,37 +180,18 @@ function checkGameOver(){
   var collision = false;
   switch(frogRow){
     case 1: case 3: case 4:
-      var rowData = rowInfo[frogRow-1];
-      var logLocs = rowData.locs;
-      var contained = false;
-      for(var i = 0; i < logLocs.length; i++){
-        contained = contained || contain (frogsu, frogx, rowData.item, logLocs[i], outerWaterAllowance);
-      }
-      collision = !contained;
+      collision = collisionOnLogRow();
       break;
+      
     case 2: case 5:
-      var rowData = rowInfo[frogRow-1];
-      var logLocs = rowData.locs;
-      var contained = false;
-      var overlapped = false;
-      for(var i = 0; i < logLocs.length; i++){
-        contained = contained || contain (frogsu, frogx, rowData.item, logLocs[i],outerWaterAllowance);
-        if(overlapped && overlap (frogsu, frogx, rowData.item, logLocs[i],innerTurtleAllowance)){
-          contained = true;
-        }
-        overlapped = overlap (frogsu, frogx, rowData.item, logLocs[i],innerTurtleAllowance);
-      }
-      collision = !contained;
+      collision = collisionOnTurtleRow();
       break;
+      
     case 7: case 8: case 9: case 10: case 11:
-      var rowData = rowInfo[frogRow-2];
-      var carLocs = rowData.locs;
-      for(var i = 0; i < carLocs.length; i++){
-        collision = collision || overlap (frogsu, frogx, rowData.item, carLocs[i],carAllowance);
-      }
+      collision = collisionInCarRow();
       break;
+      
     case 0:
-      isGameOver = true
       var win;
       for (var i = 0; i < winLocs.length; i++){
         win = win || (frogx > winLocs[i][0] && frogx < winLocs[i][1]);
@@ -213,26 +200,23 @@ function checkGameOver(){
       else collision = true
       break;
   }
+  
   if (collision) {
-    isGameOver=true;
     manageDeath();
   }  
 }
 
 
 function overlap(dims1, x1, dims2, x2, allowance){//return true if 1 and 2 overlap significantly
-  console.log(x1,x2);
   if (x1 < x2) {
-    if (frogRow==5)console.log("A",x1+dims1[2],x2+allowance,x2+dims2[3],x1)
     if (x1 + dims1[2] > x2 + allowance && x2 + dims2[2] > x1 ) return true;
   }
   else {
-    if (frogRow==5)console.log("B",x2+dims2[2],x1+allowance,x1+dims2[3],x2)
     if (x2 + dims2[2] > x1 + allowance && x1 + dims1[2] > x2) return true;
   }
-  if(frogRow==5)console.log("false");
   return false;
 }
+
 function contain(dims1, x1, dims2, x2,allowance){//return true if 1 is mostly contained by 2
   if (x1 + allowance > x2){
     if (x1 + dims1[2] < x2 + dims2[2] + allowance) return true;
@@ -250,8 +234,69 @@ function updateFrogLoc(){
   }
 }
 function manageWin(){
-  console.log("win");
+  numWins++;
+  if (numWins%5 == 0) score += 1000;
+  else score += 50;
+  resetFrogger();
 }
 function manageDeath(){
-  console.log("die");
+  numLives--;
+  if(numLives == 0){
+    isGameOver = true;
+    if (score > highscore){
+      highscore = score;
+      localStorage["frogger_high"] = score;
+    }
+  }
+  resetFrogger();
+  
+}
+function resetFrogger(){
+  frogx = 190;//190;
+  frogRow = 12;//12;
+  rowProgress = 12;
+}
+function collisionOnTurtleRow(){
+  var rowData = rowInfo[frogRow-1];
+  var logLocs = rowData.locs;
+  var contained = false;
+  var overlapped = false;
+  var prevOverlapped = false;
+  for(var i = 0; i < logLocs.length; i++){
+    contained = contained || contain (frogsu, frogx, rowData.item, logLocs[i],outerWaterAllowance);
+    overlapped = overlap(frogsu, frogx, rowData.item, logLocs[i],innerTurtleAllowance);
+    if (overlapped&&prevOverlapped)contained = true;
+    prevOverlapped = overlapped;
+  }
+  return !contained;
+}
+
+function collisionOnLogRow(){
+  var rowData = rowInfo[frogRow-1];
+  var logLocs = rowData.locs;
+  var contained = false;
+  for(var i = 0; i < logLocs.length; i++){
+    contained = contained || contain (frogsu, frogx, rowData.item, logLocs[i], outerWaterAllowance);
+  }
+  return !contained;
+}
+
+function collisionInCarRow(){
+  var collision;
+  var rowData = rowInfo[frogRow-2];
+  var carLocs = rowData.locs;
+  for(var i = 0; i < carLocs.length; i++){
+    collision = collision || overlap (frogsu, frogx, rowData.item, carLocs[i],carAllowance);
+  }
+  return collision;
+}
+function updateScore(){
+  if (forwardMove == true){
+    forwardMove = false;
+    console.log(rowProgress,frogRow);
+    if (rowProgress > frogRow){
+      rowProgress--;
+      score += 10;
+    }
+  }
 }
