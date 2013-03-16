@@ -256,6 +256,7 @@ function contain(dims1, x1, dims2, x2,allowance){//return true if 1 is mostly co
 
 function updateGame(){
   if (!isGameOver) updateBoard();
+  time += 50;
 }
 function updateFrogLoc(){
   if (frogRow > 0 && frogRow < 6){
@@ -348,4 +349,14 @@ function updateScore(){
       score += 10;
     }
   }
+}
+
+function placeLadyFrog(){
+  for(var i = 0; i < row3LogLocs.length; i++){
+    if(row3LogLocs[i] + bigLog[2] < 0){
+      ladyFrogx = row3LogLocs[i]+20;
+      return true;
+    }
+  }
+  return false;
 }
