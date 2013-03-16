@@ -41,6 +41,8 @@ function drawBoard(){
   ctx.fillRect(202,532,timewidth,25);
   
   drawScore();
+  
+  if (flyVisible) drawFly();
 
   for(var i = 0; i < rowInfo.length; i++){
 	  var rowData = rowInfo[i];
@@ -67,6 +69,10 @@ function drawRow(itemLoc,spriteLoc,verticalOffset,row){
       }
     }
   }
+}
+function drawFly(){
+  ctx.drawImage(img,fly[0],fly[1],fly[2],fly[3],
+  flyLocs[flyColumn],70,fly[2],fly[3]);
 }
 
 function drawFrog(x,y,frogstate,rotate){
@@ -139,8 +145,9 @@ function initGameVars(){
   logAllowance = 6;
   
   
-  flyLoc = 3;
-  flyVisibile = false;
+  flyColumn = 3;
+  flyLocs = [20,103,189,274,358]
+  flyVisible = true;
   score = 0;
   highscore = localStorage["frogger_high"]
   if (highscore == null)highscore = 0;
@@ -165,6 +172,7 @@ function initSpriteVars(){
   frogsr = [8,332,27,26];//small right
   frogsu = [10,366,27,25];//small up
   ladyFrog = [237,408,20,24];
+  fly = [140,236,16,16];
 
   purpleblock=[0,115,399,40];
   greenblock=[0,54,399,56];
@@ -242,7 +250,7 @@ function checkCollisions(){
 }
 
 function overlap(dims1, x1, dims2, x2, allowance){//return true if 1 and 2 overlap significantly
- 
+  
   if (x1 < x2) {
     if (x1 + dims1[2] > x2 + allowance && x2 + dims2[2] > x1 ) return true;
   }
@@ -279,6 +287,13 @@ function manageWin(){
   numWins++;
   score += time % 100;
   time = 30000;
+  if(flyVisible){
+    console.log(frogsu[2],frogx,fly[2],flyLocs[flyColumn]);
+    if(overlap(frogsu, frogx, fly, flyLocs[flyColumn], 7)){
+      score += 200;
+      flyVisible = false;
+    }
+  }
   if (numWins%5 == 0){
     score += 1000;
     level++;
