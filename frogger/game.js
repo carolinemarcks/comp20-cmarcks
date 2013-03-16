@@ -15,6 +15,7 @@ function start_game() {
 }
 
 function drawBoard(){
+  ctx.clearRect(0, 0, 565, 399);
   ctx.fillStyle = "#191970";
   ctx.fillRect(0,0,399,280);
   ctx.fillStyle = "#000000";
@@ -37,7 +38,7 @@ function drawBoard(){
 
   for(var i = 0; i < rowInfo.length; i++){
 	  var rowData = rowInfo[i];
-  	drawRow(rowData.locs, rowData.item, rowData.offset);
+  	drawRow(rowData.locs, rowData.item, rowData.offset,i);
   }
   
   if(ladyFrogState == 1){
@@ -50,14 +51,18 @@ function drawBoard(){
   }
 }
 
-function drawRow(itemLoc,spriteLoc,verticalOffset){
+function drawRow(itemLoc,spriteLoc,verticalOffset,row){
   for(var i = 0; i < itemLoc.length; i++){ 
     if(itemLoc[i] > (0-spriteLoc[2]) && itemLoc[i] < 399){
       ctx.drawImage(img,spriteLoc[0],spriteLoc[1],spriteLoc[2],spriteLoc[3],
       itemLoc[i],verticalOffset,spriteLoc[2],spriteLoc[3]);
+      if(row == 1){
+    
+      }
     }
   }
 }
+
 /*function drawFrog(frogstate,rotate){
   if(rotate){
     console.log("whert");
@@ -95,7 +100,7 @@ function drawFrog(x,y,frogstate,rotate){
     ctx.save();
     ctx.translate(x, y);
     ctx.rotate(Math.PI*3/2);
-    ctx.drawImage(img, sourceX, sourceY, w, h, -w, -h, w, h);
+    ctx.drawImage(img, sourceX, sourceY, w, h, -w, 0, w, h);
     ctx.restore();
   }else
   ctx.drawImage(img,sourceX, sourceY,w,h,x,y,w,h);
@@ -150,8 +155,10 @@ function initGameVars(){
 	         {'locs':row11CarLocs,'speed':2, 'item':car10,'offset':greenblock[3]+405,'cycle':505}];
 
   carAllowance = 6;
-  innerTurtleAllowance = -10;
-  outerWaterAllowance = 6;
+  turtleOverlapAllowance = -30;
+  turtleContainmentAllowance = 20;
+  logAllowance = 6;
+  
   
   flyLoc = 3;
   flyVisibile = false;
@@ -161,7 +168,7 @@ function initGameVars(){
   rowProgress = 12;
   forwardMove = false;
   rowDims = [60,98,130,167,200,235,280,320,360,395,428,465,500];
-  winLocs = [[7,20],[92,104],[177,190],[260,275],[347,358]];
+  winLocs = [[6,21],[91,105],[176,191],[259,276],[346,359]];
 }
 
 function initSpriteVars(){
@@ -256,18 +263,24 @@ function checkCollisions(){
 }
 
 function overlap(dims1, x1, dims2, x2, allowance){//return true if 1 and 2 overlap significantly
+ // console.log("overlap",x1,x2);
   if (x1 < x2) {
     if (x1 + dims1[2] > x2 + allowance && x2 + dims2[2] > x1 ) return true;
+   // console.log("A",x1+dims1[2],x2+allowance,x2+dims2[2], x1)
   }
   else {
     if (x2 + dims2[2] > x1 + allowance && x1 + dims1[2] > x2) return true;
+   // console.log("B",x2+dims2[2],x1+allowance,x1+dims1[2], x2)
   }
   return false;
 }
 
 function contain(dims1, x1, dims2, x2,allowance){//return true if 1 is mostly contained by 2
+  console.log("contain",x1,x2);
   if (x1 + allowance > x2){
+    console.log(x2+dims2[2]+allowance,x1+dims1[2], "x2:",x2,"width:",dims2[2],"x1",x1,"width",dims1[2]);
     if (x1 + dims1[2] < x2 + dims2[2] + allowance) return true;
+    
   }
   return false;
 }
@@ -312,6 +325,24 @@ function manageDeath(){
       localStorage["frogger_high"] = score;
     }
   }
+  var itemLoc = row2TurtleLocs;
+  for(var i = 0; i < row2TurtleLocs.length; i++){
+        /*ctx.moveTo(itemLoc[i], 10);
+        ctx.strokeStyle = "red";
+        ctx.lineTo(itemLoc[i], 190);
+        ctx.stroke();
+        ctx.moveTo(itemLoc[i]+turtle1[2], 10);
+        ctx.strokeStyle = "green";
+        ctx.lineTo(itemLoc[i]+turtle1[2], 190);
+        ctx.stroke();*/
+  }    
+  ctx.strokeStyle = "blue";
+  ctx.moveTo(frogx, 10);
+  ctx.lineTo(frogx,190);
+  ctx.stroke()
+  ctx.moveTo(frogx+frogsu[2], 10);
+  ctx.lineTo(frogx+frogsu[2],190);
+  exit();
   resetFrogger(); 
 }
 function resetFrogger(){
@@ -326,9 +357,12 @@ function collisionOnTurtleRow(){
   var contained = false;
   var overlapped = false;
   var prevOverlapped = false;
+  var frog;
+  if(ladyFrogState == 1) frog = ladyFrog;
+  else frog = frogsu;
   for(var i = 0; i < logLocs.length; i++){
-    contained = contained || contain (frogsu, frogx, rowData.item, logLocs[i],outerWaterAllowance);
-    overlapped = overlap(frogsu, frogx, rowData.item, logLocs[i],innerTurtleAllowance);
+    contained = contained || contain (frog, frogx, rowData.item, logLocs[i],turtleContainmentAllowance);
+    overlapped = overlap(frog, frogx, rowData.item, logLocs[i],turtleOverlapAllowance);
     if (overlapped&&prevOverlapped)contained = true;
     prevOverlapped = overlapped;
   }
@@ -340,7 +374,7 @@ function collisionOnLogRow(){
   var logLocs = rowData.locs;
   var contained = false;
   for(var i = 0; i < logLocs.length; i++){
-    contained = contained || contain (frogsu, frogx, rowData.item, logLocs[i], outerWaterAllowance);
+    contained = contained || contain (frogsu, frogx, rowData.item, logLocs[i], logAllowance);
   }
   return !contained;
 }
