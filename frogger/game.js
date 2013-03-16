@@ -321,13 +321,15 @@ function collisionOnTurtleRow(){
   var frog;
   if(ladyFrogState == 1) frog = ladyFrog;
   else frog = frogsu;
-  for(var i = 0; i <= logLocs.length; i++){
-    i = i % logLocs.length; //wrap around to catch overlaps on opp side of array
+  for(var i = 0; i < logLocs.length; i++){
     contained = contained || contain (frog, frogx, rowData.item, logLocs[i],turtleContainmentAllowance);
     overlapped = overlap(frog, frogx, rowData.item, logLocs[i],turtleOverlapAllowance);
     if (overlapped&&prevOverlapped)contained = true;
     prevOverlapped = overlapped;
   }
+  overlapped = overlap(frog, frogx, rowData.item, logLocs[0],turtleOverlapAllowance);
+  if (overlapped&&prevOverlapped)contained = true;//check for overlap between last and first in array
+
   return !contained;
 }
 
