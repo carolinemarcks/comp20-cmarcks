@@ -59,7 +59,7 @@ function updateFrogLoc(){
   }
   var lspeed = speeds[rowInfo[ladyFrogRow-1].speed];
   ladyFrogx += lspeed;
-  if (ladyFrogx > 400) ladyFrogState = 2;
+  if (ladyFrogx > 500) ladyFrogState = 2;
 
 }
 
@@ -205,6 +205,7 @@ function drawRow(itemLoc,spriteLoc,verticalOffset,row){
     }
   }
 }
+
 function drawFly(){
   ctx.drawImage(img,fly[0],fly[1],fly[2],fly[3],
   flyLocs[flyColumn],70,fly[2],fly[3]);
