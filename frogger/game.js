@@ -124,7 +124,7 @@ function initGameVars(){
   row3LogLocs = [0, 300, 500];
   row4LogLocs = [0, 105, 260];
   row5TurtleLocs = [-10, 25, 60, 150, 185, 220, 310, 345, 380];
-  row6SnakeLocs = [-5];
+  row6SnakeLocs = [-5,40];
   row7CarLocs = [200,370];
   row8CarLocs = [-10,90,320];	
   row9CarLocs = [125,300,380];	
