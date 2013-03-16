@@ -39,7 +39,15 @@ function drawBoard(){
 	  var rowData = rowInfo[i];
   	drawRow(rowData.locs, rowData.item, rowData.offset);
   }
-  drawFrog(frogsu);
+  
+  if(ladyFrogState == 1){
+    drawFrog(frogx,rowDims[frogRow],ladyFrog,true);
+  } else {
+    if (ladyFrogState == 0){
+      drawFrog(ladyFrogx,rowDims[ladyFrogRow],ladyFrog,true);
+    }
+    drawFrog(frogx,rowDims[frogRow],frogsu,false);
+  }
 }
 
 function drawRow(itemLoc,spriteLoc,verticalOffset){
@@ -50,11 +58,48 @@ function drawRow(itemLoc,spriteLoc,verticalOffset){
     }
   }
 }
-function drawFrog(frogstate){
-  ctx.drawImage(img,frogstate[0],frogstate[1],frogstate[2],frogstate[3],frogx,
-    rowDims[frogRow],frogstate[2],frogstate[3]);
-}
+/*function drawFrog(frogstate,rotate){
+  if(rotate){
+    console.log("whert");
+    var w = frogstate[2];
+    var h = frogstate[3];
+    x = frogx;
+    y = rowDims[frogRow];
+ 
+    // save state
+    ctx.save();
+    // set screen position
+    ctx.translate(x, y);
+    // set rotation
+    ctx.rotate(Math.PI);
 
+    // draw image to screen drawImage(imageObject, sourceX, sourceY, sourceWidth, sourceHeight,
+    // destinationX, destinationY, destinationWidth, destinationHeight)
+    ctx.drawImage(imageObject, 0, 0, w, h, -w/2, -h/2, w, h);
+    // restore state
+    ctx.restore();
+  }
+  else{
+    ctx.drawImage(img,frogstate[0],frogstate[1],frogstate[2],frogstate[3],frogx,
+      rowDims[frogRow],frogstate[2],frogstate[3]);
+  }
+  
+}*/
+function drawFrog(x,y,frogstate,rotate){
+
+  var sourceX = frogstate[0];
+  var sourceY = frogstate[1];
+  var w = frogstate[2];
+  var h = frogstate[3];
+  if(rotate){
+    ctx.save();
+    ctx.translate(x, y);
+    ctx.rotate(Math.PI*3/2);
+    ctx.drawImage(img, sourceX, sourceY, w, h, -w, -h, w, h);
+    ctx.restore();
+  }else
+  ctx.drawImage(img,sourceX, sourceY,w,h,x,y,w,h);
+}
 function drawScore(){
   frogLifex = 0;
   for(var i = 0; i < numLives; i++){
@@ -73,6 +118,9 @@ function drawScore(){
 function initGameVars(){
   frogx = 190;//190;
   frogRow = 12;//12;
+  ladyFrogx = -200;
+  ladyFrogRow = 3;
+  ladyFrogState = 0; //0 = alone 1 = with otherfrog
   numLives = 3;
   isGameOver = false;
   level = 1;
@@ -118,18 +166,19 @@ function initGameVars(){
 
 function initSpriteVars(){
   //all image locs stored by x,y,width,height
-  bigLog=[4,164,184,24];
-  medLog=[4,196,120,24];
-  smallLog=[4,230,90,20];
-  turtle1=[12,406,35,25];
-  truck6=[100,300,54,22];
-  car7=[44,262,32,29];
-  car8=[7,264,33,25];
-  car9_1=[6,298,34,25];
-  car10=[80,262,29,29];
-  frogger=[9,8,332,40];
-  frogsr=[8,332,27,26];//small right
-  frogsu=[10,366,27,25];//small up
+  bigLog = [4,164,184,24];
+  medLog = [4,196,120,24];
+  smallLog = [4,230,90,20];
+  turtle1 = [12,406,35,25];
+  truck6 = [100,300,54,22];
+  car7 = [44,262,32,29];
+  car8 = [7,264,33,25];
+  car9_1 = [6,298,34,25];
+  car10 = [80,262,29,29];
+  frogger = [9,8,332,40];
+  frogsr = [8,332,27,26];//small right
+  frogsu = [10,366,27,25];//small up
+  ladyFrog = [237,408,20,24];
 
   purpleblock=[0,115,399,40];
   greenblock=[0,54,399,56];
@@ -148,7 +197,7 @@ function updateBoard(){
     }
   }
   updateFrogLoc();
-  checkGameOver();
+  checkCollisions();
   updateScore();
   drawBoard();
   
@@ -175,7 +224,7 @@ document.addEventListener("keydown", function(event) {
   }
 });
 
-function checkGameOver(){
+function checkCollisions(){
   var collision = false;
   switch(frogRow){
     case 1: case 3: case 4:
@@ -199,6 +248,7 @@ function checkGameOver(){
       else collision = true
       break;
   }
+  if (ladyFrogRow==frogRow && overlap(ladyFrog,ladyFrogx, frogsu, frogx, 0)) ladyFrogState = 1;
   
   if (collision || frogx < 0 || frogx > 380){
     manageDeath();
@@ -230,7 +280,11 @@ function updateFrogLoc(){
     var speed = speeds[rowInfo[frogRow-1].speed];
     frogx += speed;
   }
+  var lspeed = speeds[rowInfo[ladyFrogRow-1].speed];
+  ladyFrogx += lspeed;
+
 }
+
 
 function manageWin(){
   numWins++;
@@ -241,12 +295,11 @@ function manageWin(){
     speeds[1]++;
     speeds[2]--;
     speeds[3]--;
-    speeds[0]++;
-    speeds[1]++;
-    speeds[2]--;
-    speeds[3]--;
   }
   else score += 50;
+  
+  if (ladyFrogState == 1) score +=200;
+  
   resetFrogger();
 }
 
@@ -265,6 +318,7 @@ function resetFrogger(){
   frogx = 190;//190;
   frogRow = 12;//12;
   rowProgress = 12;
+  if (ladyFrogState == 1) ladyFrogState = 2;
 }
 function collisionOnTurtleRow(){
   var rowData = rowInfo[frogRow-1];
