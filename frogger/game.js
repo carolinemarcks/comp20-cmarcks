@@ -71,8 +71,8 @@ function manageWin(){
   numWins++;
   score += time % 100;
   time = 30000;
+
   if(flyVisible){
-    console.log(frogsu[2],frogx,fly[2],flyLocs[flyColumn]);
     if(overlap(frogsu, frogx, fly, flyLocs[flyColumn], 7)){
       score += 200;
       flyVisible = false;
@@ -80,11 +80,7 @@ function manageWin(){
   }
   if (numWins%5 == 0){
     score += 1000;
-    level++;
-    speeds[0]++;
-    speeds[1]++;
-    speeds[2]--;
-    speeds[3]--;
+    increaseLevel();
   }
   else score += 50;
   
@@ -110,6 +106,13 @@ function resetFrogger(){
   frogRow = 12;//12;
   rowProgress = 12;
   if (ladyFrogState == 1) ladyFrogState = 2;
+}
+function increaseLevel(){
+  level++;
+  speeds[0]++;
+  speeds[1]++;
+  speeds[2]--;
+  speeds[3]--;
 }
 
 /**************
@@ -168,30 +171,27 @@ function drawBoard(){
   //top green block
   ctx.drawImage(img,greenblock[0],greenblock[1],greenblock[2],greenblock[3],0,
     40,greenblock[2],greenblock[3]);
-    
-  ctx.fillStyle = "#FFFFFF";
-  ctx.fillRect(200,530,190,29);
-  ctx.fillStyle = "#7CFC00";
-  timewidth = 186 * (time/30000)
-  ctx.fillRect(202,532,timewidth,25);
   
-  drawScore();
-  
-  if (flyVisible) drawFly();
+
 
   for(var i = 0; i < rowInfo.length; i++){
 	  var rowData = rowInfo[i];
   	drawRow(rowData.locs, rowData.item, rowData.offset,i%11);
   }
   
-  if(ladyFrogState == 1){
-    drawFrog(frogx,rowDims[frogRow],ladyFrog,true);
-  } else {
-    if (ladyFrogState == 0){
-      drawFrog(ladyFrogx,rowDims[ladyFrogRow],ladyFrog,true);
-    }
-    drawFrog(frogx,rowDims[frogRow],frogsu,false);
-  }
+  drawFrogManager();
+  drawTimeBar();
+  drawScore(); 
+  if (flyVisible) drawFly();
+}
+
+
+function drawTimeBar(){
+  ctx.fillStyle = "#FFFFFF";
+  ctx.fillRect(200,530,190,29);
+  ctx.fillStyle = "#7CFC00";
+  timewidth = 186 * (time/30000)
+  ctx.fillRect(202,532,timewidth,25);
 }
 
 function drawRow(itemLoc,spriteLoc,verticalOffset,row){
@@ -210,8 +210,17 @@ function drawFly(){
   flyLocs[flyColumn],70,fly[2],fly[3]);
 }
 
+function drawFrogManager(){
+  if(ladyFrogState == 1){
+    drawFrog(frogx,rowDims[frogRow],ladyFrog,true);
+  } else {
+    if (ladyFrogState == 0){
+      drawFrog(ladyFrogx,rowDims[ladyFrogRow],ladyFrog,true);
+    }
+    drawFrog(frogx,rowDims[frogRow],frogsu,false);
+  }
+}
 function drawFrog(x,y,frogstate,rotate){
-
   var sourceX = frogstate[0];
   var sourceY = frogstate[1];
   var w = frogstate[2];
