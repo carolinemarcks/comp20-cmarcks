@@ -329,8 +329,6 @@ function manageWin(){
 }
 
 function manageDeath(){
-  numLives--;
-  time = 30000;
   if(numLives == 0){
     isGameOver = true;
     if (score > highscore){
@@ -338,6 +336,8 @@ function manageDeath(){
       localStorage["frogger_high"] = score;
     }
   }
+  numLives--;
+  time = 30000;
   resetFrogger(); 
 }
 function resetFrogger(){
