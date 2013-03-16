@@ -14,6 +14,141 @@ function start_game() {
   }
 }
 
+
+/************************
+ GENERAL UPDATE FUNCTIONS
+ ************************/
+
+function updateBoard(){
+  for (var i = 0; i < rowInfo.length; i++){
+    var rowData = rowInfo[i];
+    var locs = rowData.locs;
+    for( var j = 0; j < locs.length; j++){
+      var cycle = rowData.cycle;
+      var width = rowData.item[2];
+      if (speeds[rowData.speed] > 0 && 399 < locs[j]) locs[j] -= (cycle);
+      if (speeds[rowData.speed] < 0 && 0 - width > locs[j]) locs[j] += (cycle);
+      locs[j]+=speeds[rowData.speed];
+    }
+  }
+  updateFrogLoc();
+  checkCollisions();
+  updateScoreFromMove();
+  drawBoard();
+}
+
+function updateGame(){
+  if (!isGameOver) updateBoard();
+  time -= 50;
+  if (time == 0) manageDeath();
+  var randomnumber=Math.floor(Math.random()*1000);
+  if ((randomnumber >= 4 || randomnumber < 6) && ladyFrogState == 2){
+    placeLadyFrog();
+  }else if ((randomnumber >= 7 || randomnumber < 10) && !flyVisible){
+    placeFly();
+  }else if (randomnumber == 10){
+    flyVisible = false;
+  }
+  
+}
+
+function updateFrogLoc(){
+  if (frogRow > 0 && frogRow < 6){
+    var speed = speeds[rowInfo[frogRow-1].speed];
+    frogx += speed;
+  }
+  var lspeed = speeds[rowInfo[ladyFrogRow-1].speed];
+  ladyFrogx += lspeed;
+  if (ladyFrogx > 400) ladyFrogState = 2;
+
+}
+
+/**************************
+ MANAGE GAMESTATE FUNCTIONS
+ **************************/
+
+function manageWin(){
+  numWins++;
+  score += time % 100;
+  time = 30000;
+  if(flyVisible){
+    console.log(frogsu[2],frogx,fly[2],flyLocs[flyColumn]);
+    if(overlap(frogsu, frogx, fly, flyLocs[flyColumn], 7)){
+      score += 200;
+      flyVisible = false;
+    }
+  }
+  if (numWins%5 == 0){
+    score += 1000;
+    level++;
+    speeds[0]++;
+    speeds[1]++;
+    speeds[2]--;
+    speeds[3]--;
+  }
+  else score += 50;
+  
+  if (ladyFrogState == 1) score +=200;
+  
+  resetFrogger();
+}
+
+function manageDeath(){
+  if(numLives == 0){
+    isGameOver = true;
+    if (score > highscore){
+      highscore = score;
+      localStorage["frogger_high"] = score;
+    }
+  }
+  numLives--;
+  time = 30000;
+  resetFrogger(); 
+}
+function resetFrogger(){
+  frogx = 190;//190;
+  frogRow = 12;//12;
+  rowProgress = 12;
+  if (ladyFrogState == 1) ladyFrogState = 2;
+}
+
+/**************
+ EVENT HANDLING
+ **************/
+
+document.addEventListener("keydown", function(event) {
+  event.preventDefault();
+  switch(event.keyCode){
+    case 37: 
+      if (frogx > 8) frogx -= 30;
+      if (frogx < 8) frogx = 8;
+      break;
+    case 38:
+      forwardMove = true;
+      if (frogRow > 0) frogRow--;
+      break;
+    case 39:
+      if (frogx < 370) frogx += 30;
+      if(frogx > 370) frogx = 370;
+      break;
+    case 40:
+      if (frogRow < 12) frogRow++;
+      break;
+  }
+});
+
+function updateScoreFromMove(){
+  if (forwardMove == true){
+    forwardMove = false;
+    if (rowProgress > frogRow){
+      rowProgress--;
+      score += 10;
+    }
+  }
+}
+/**************
+ DRAW FUNCTIONS
+ **************/
 function drawBoard(){
   ctx.clearRect(0, 0, 565, 399);
   ctx.fillStyle = "#191970";
@@ -107,46 +242,9 @@ function drawScore(){
 }
 
 
-
-function updateBoard(){
-  for (var i = 0; i < rowInfo.length; i++){
-    var rowData = rowInfo[i];
-    var locs = rowData.locs;
-    for( var j = 0; j < locs.length; j++){
-      var cycle = rowData.cycle;
-      var width = rowData.item[2];
-      if (speeds[rowData.speed] > 0 && 399 < locs[j]) locs[j] -= (cycle);
-      if (speeds[rowData.speed] < 0 && 0 - width > locs[j]) locs[j] += (cycle);
-      locs[j]+=speeds[rowData.speed];
-    }
-  }
-  updateFrogLoc();
-  checkCollisions();
-  updateScore();
-  drawBoard();
-  
-}
-
-document.addEventListener("keydown", function(event) {
-  event.preventDefault();
-  switch(event.keyCode){
-    case 37: 
-      if (frogx > 8) frogx -= 30;
-      if (frogx < 8) frogx = 8;
-      break;
-    case 38:
-      forwardMove = true;
-      if (frogRow > 0) frogRow--;
-      break;
-    case 39:
-      if (frogx < 370) frogx += 30;
-      if(frogx > 370) frogx = 370;
-      break;
-    case 40:
-      if (frogRow < 12) frogRow++;
-      break;
-  }
-});
+/*******************************
+ COLLISION DETECTION AND HELPERS
+ *******************************/
 
 function checkCollisions(){
   var collision = false;
@@ -200,76 +298,10 @@ function contain(dims1, x1, dims2, x2,allowance){
   return false;
 }
 
-function updateGame(){
-  if (!isGameOver) updateBoard();
-  time -= 50;
-  if (time == 0) manageDeath();
-  var randomnumber=Math.floor(Math.random()*1000);
-  if ((randomnumber >= 4 || randomnumber < 6) && ladyFrogState == 2){
-    placeLadyFrog();
-  }else if ((randomnumber >= 7 || randomnumber < 10) && !flyVisible){
-    placeFly();
-  }else if (randomnumber == 10){
-    flyVisible = false;
-  }
-  
-}
-function updateFrogLoc(){
-  if (frogRow > 0 && frogRow < 6){
-    var speed = speeds[rowInfo[frogRow-1].speed];
-    frogx += speed;
-  }
-  var lspeed = speeds[rowInfo[ladyFrogRow-1].speed];
-  ladyFrogx += lspeed;
-  if (ladyFrogx > 400) ladyFrogState = 2;
+/*******************************
+ ROW SPECIFIC COLISION FUNCTIONS
+ *******************************/
 
-}
-
-
-function manageWin(){
-  numWins++;
-  score += time % 100;
-  time = 30000;
-  if(flyVisible){
-    console.log(frogsu[2],frogx,fly[2],flyLocs[flyColumn]);
-    if(overlap(frogsu, frogx, fly, flyLocs[flyColumn], 7)){
-      score += 200;
-      flyVisible = false;
-    }
-  }
-  if (numWins%5 == 0){
-    score += 1000;
-    level++;
-    speeds[0]++;
-    speeds[1]++;
-    speeds[2]--;
-    speeds[3]--;
-  }
-  else score += 50;
-  
-  if (ladyFrogState == 1) score +=200;
-  
-  resetFrogger();
-}
-
-function manageDeath(){
-  if(numLives == 0){
-    isGameOver = true;
-    if (score > highscore){
-      highscore = score;
-      localStorage["frogger_high"] = score;
-    }
-  }
-  numLives--;
-  time = 30000;
-  resetFrogger(); 
-}
-function resetFrogger(){
-  frogx = 190;//190;
-  frogRow = 12;//12;
-  rowProgress = 12;
-  if (ladyFrogState == 1) ladyFrogState = 2;
-}
 function collisionOnTurtleRow(){
   var rowData = rowInfo[frogRow-1];
   var logLocs = rowData.locs;
@@ -328,15 +360,10 @@ function alligatorCollision(){
   }
 }
 
-function updateScore(){
-  if (forwardMove == true){
-    forwardMove = false;
-    if (rowProgress > frogRow){
-      rowProgress--;
-      score += 10;
-    }
-  }
-}
+
+/**************************
+ RANDOM PLACEMENT FUNCTIONS
+ **************************/
 
 function placeLadyFrog(){
   for(var i = 0; i < row3LogLocs.length; i++){
@@ -354,6 +381,10 @@ function placeFly(){
   flyColumn = Math.floor(Math.random()*4);
 }
 
+
+/************************
+ INITIALIZATION FUNCTIONS
+ ************************/
 function initGameVars(){
   //frog info
   frogx = 190;
