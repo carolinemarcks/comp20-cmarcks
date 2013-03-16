@@ -254,8 +254,7 @@ function overlap(dims1, x1, dims2, x2, allowance){//return true if 1 and 2 overl
 
 function contain(dims1, x1, dims2, x2,allowance){//return true if 1 is mostly contained by 2
   if (x1 + allowance > x2){
-    if (x1 + dims1[2] < x2 + dims2[2] + allowance) return true;
-    
+    if (x1 + dims1[2] < x2 + dims2[2] + allowance) return true;  
   }
   return false;
 }
@@ -278,6 +277,7 @@ function updateFrogLoc(){
 
 function manageWin(){
   numWins++;
+  score += time % 100;
   time = 30000;
   if (numWins%5 == 0){
     score += 1000;
