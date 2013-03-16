@@ -63,33 +63,6 @@ function drawRow(itemLoc,spriteLoc,verticalOffset,row){
   }
 }
 
-/*function drawFrog(frogstate,rotate){
-  if(rotate){
-    console.log("whert");
-    var w = frogstate[2];
-    var h = frogstate[3];
-    x = frogx;
-    y = rowDims[frogRow];
- 
-    // save state
-    ctx.save();
-    // set screen position
-    ctx.translate(x, y);
-    // set rotation
-    ctx.rotate(Math.PI);
-
-    // draw image to screen drawImage(imageObject, sourceX, sourceY, sourceWidth, sourceHeight,
-    // destinationX, destinationY, destinationWidth, destinationHeight)
-    ctx.drawImage(imageObject, 0, 0, w, h, -w/2, -h/2, w, h);
-    // restore state
-    ctx.restore();
-  }
-  else{
-    ctx.drawImage(img,frogstate[0],frogstate[1],frogstate[2],frogstate[3],frogx,
-      rowDims[frogRow],frogstate[2],frogstate[3]);
-  }
-  
-}*/
 function drawFrog(x,y,frogstate,rotate){
 
   var sourceX = frogstate[0];
@@ -125,7 +98,7 @@ function initGameVars(){
   frogRow = 12;//12;
   ladyFrogx = -200;
   ladyFrogRow = 3;
-  ladyFrogState = 0; //0 = alone 1 = with otherfrog
+  ladyFrogState = 0; //0 = alone 1 = with otherfrog, 2 = invisible
   numLives = 3;
   isGameOver = false;
   level = 1;
@@ -263,22 +236,18 @@ function checkCollisions(){
 }
 
 function overlap(dims1, x1, dims2, x2, allowance){//return true if 1 and 2 overlap significantly
- // console.log("overlap",x1,x2);
+ 
   if (x1 < x2) {
     if (x1 + dims1[2] > x2 + allowance && x2 + dims2[2] > x1 ) return true;
-   // console.log("A",x1+dims1[2],x2+allowance,x2+dims2[2], x1)
   }
   else {
     if (x2 + dims2[2] > x1 + allowance && x1 + dims1[2] > x2) return true;
-   // console.log("B",x2+dims2[2],x1+allowance,x1+dims1[2], x2)
   }
   return false;
 }
 
 function contain(dims1, x1, dims2, x2,allowance){//return true if 1 is mostly contained by 2
-  console.log("contain",x1,x2);
   if (x1 + allowance > x2){
-    console.log(x2+dims2[2]+allowance,x1+dims1[2], "x2:",x2,"width:",dims2[2],"x1",x1,"width",dims1[2]);
     if (x1 + dims1[2] < x2 + dims2[2] + allowance) return true;
     
   }
@@ -325,24 +294,6 @@ function manageDeath(){
       localStorage["frogger_high"] = score;
     }
   }
-  var itemLoc = row2TurtleLocs;
-  for(var i = 0; i < row2TurtleLocs.length; i++){
-        /*ctx.moveTo(itemLoc[i], 10);
-        ctx.strokeStyle = "red";
-        ctx.lineTo(itemLoc[i], 190);
-        ctx.stroke();
-        ctx.moveTo(itemLoc[i]+turtle1[2], 10);
-        ctx.strokeStyle = "green";
-        ctx.lineTo(itemLoc[i]+turtle1[2], 190);
-        ctx.stroke();*/
-  }    
-  ctx.strokeStyle = "blue";
-  ctx.moveTo(frogx, 10);
-  ctx.lineTo(frogx,190);
-  ctx.stroke()
-  ctx.moveTo(frogx+frogsu[2], 10);
-  ctx.lineTo(frogx+frogsu[2],190);
-  exit();
   resetFrogger(); 
 }
 function resetFrogger(){
