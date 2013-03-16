@@ -103,7 +103,7 @@ function initGameVars(){
   isGameOver = false;
   level = 1;
   numWins = 0;
-  time = 0;
+  time = 30000;
   speeds=[2,3,-2,-3];
   
   row1LogLocs = [10, 160, 350];
@@ -256,7 +256,8 @@ function contain(dims1, x1, dims2, x2,allowance){//return true if 1 is mostly co
 
 function updateGame(){
   if (!isGameOver) updateBoard();
-  time += 50;
+  time -= 50;
+  if (time == 0) manageDeath();
 }
 function updateFrogLoc(){
   if (frogRow > 0 && frogRow < 6){
@@ -271,6 +272,7 @@ function updateFrogLoc(){
 
 function manageWin(){
   numWins++;
+  time = 30000;
   if (numWins%5 == 0){
     score += 1000;
     level++;
