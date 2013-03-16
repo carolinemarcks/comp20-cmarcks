@@ -46,7 +46,7 @@ function drawBoard(){
 
   for(var i = 0; i < rowInfo.length; i++){
 	  var rowData = rowInfo[i];
-  	drawRow(rowData.locs, rowData.item, rowData.offset,i);
+  	drawRow(rowData.locs, rowData.item, rowData.offset,i%11);
   }
   
   if(ladyFrogState == 1){
@@ -119,25 +119,30 @@ function initGameVars(){
   speeds=[2,3,-2,-3];
   
   row1LogLocs = [10, 160, 350];
+  row1Alligators = [480];
   row2TurtleLocs = [20, 55, 160, 195, 300, 335, 540, 575];
   row3LogLocs = [0, 300, 500];
   row4LogLocs = [0, 105, 260];
   row5TurtleLocs = [-10, 25, 60, 150, 185, 220, 310, 345, 380];
+  row6SnakeLocs = [-5];
   row7CarLocs = [200,370];
   row8CarLocs = [-10,90,320];	
   row9CarLocs = [125,300,380];	
   row10CarLocs = [25,165,250];
   row11CarLocs = [0,100,290];
-  rowInfo = [{'locs':row1LogLocs,'speed':0,'item':medLog,'offset':greenblock[3]+40,'cycle':530},
+
+  rowInfo = [{'locs':row1LogLocs,'speed':0,'item':medLog,'offset':greenblock[3]+40,'cycle':580},
 	         {'locs':row2TurtleLocs,'speed':2,'item':turtle1,'offset':greenblock[3]+75,'cycle':630},
 	         {'locs':row3LogLocs,'speed':1,'item':bigLog,'offset':greenblock[3]+110,'cycle':740},
 	         {'locs':row4LogLocs,'speed':0,'item':smallLog,'offset':greenblock[3]+145,'cycle':490},
 	         {'locs':row5TurtleLocs,'speed':3,'item':turtle1,'offset':greenblock[3]+180,'cycle':475},
+	         {'locs':row6SnakeLocs,'speed':3,'item':snake,'offset':greenblock[3]+230,'cycle':600},
 	         {'locs':row7CarLocs,'speed':2,'item':truck6,'offset':greenblock[3]+265,'cycle':465},
 	         {'locs':row8CarLocs,'speed':1,'item':car7,'offset':greenblock[3]+300,'cycle':450},
 	         {'locs':row9CarLocs,'speed':3,'item':car8,'offset':greenblock[3]+335,'cycle':460},
 	         {'locs':row10CarLocs,'speed':0, 'item':car9_1,'offset':greenblock[3]+370,'cycle':495},
-	         {'locs':row11CarLocs,'speed':2, 'item':car10,'offset':greenblock[3]+405,'cycle':505}];
+	         {'locs':row11CarLocs,'speed':2, 'item':car10,'offset':greenblock[3]+405,'cycle':505},
+	         {'locs':row1Alligators,'speed':0,'item':alligator,'offset':greenblock[3]+40,'cycle':580}];
 
   carAllowance = 6;
   turtleOverlapAllowance = -10;
@@ -173,6 +178,8 @@ function initSpriteVars(){
   frogsu = [10,366,27,25];//small up
   ladyFrog = [237,408,20,24];
   fly = [140,236,16,16];
+  snake = [184,225,38,11];
+  alligator = [156,372,90,24];
 
   purpleblock=[0,115,399,40];
   greenblock=[0,54,399,56];
@@ -221,7 +228,9 @@ document.addEventListener("keydown", function(event) {
 function checkCollisions(){
   var collision = false;
   switch(frogRow){
-    case 1: case 3: case 4:
+    case 1: 
+      collision = alligatorCollision();
+    case 3: case 4:
       collision = collisionOnLogRow();
       break;
       
@@ -229,7 +238,7 @@ function checkCollisions(){
       collision = collisionOnTurtleRow();
       break;
       
-    case 7: case 8: case 9: case 10: case 11:
+    case 6: case 7: case 8: case 9: case 10: case 11: //snake also works here
       collision = collisionInCarRow();
       break;
       
@@ -272,7 +281,7 @@ function updateGame(){
   time -= 50;
   if (time == 0) manageDeath();
   var randomnumber=Math.floor(Math.random()*1000);
-  if ((randomnumber >= 4 || randomnumber < 7) && ladyFrogState == 2){
+  if ((randomnumber >= 4 || randomnumber < 6) && ladyFrogState == 2){
     placeLadyFrog();
   }else if ((randomnumber >= 7 || randomnumber < 10) && !flyVisible){
     placeFly();
@@ -370,13 +379,23 @@ function collisionOnLogRow(){
 
 function collisionInCarRow(){
   var collision;
-  var rowData = rowInfo[frogRow-2];
+  var rowData = rowInfo[frogRow-1];
   var carLocs = rowData.locs;
   for(var i = 0; i < carLocs.length; i++){
     collision = collision || overlap (frogsu, frogx, rowData.item, carLocs[i],carAllowance);
   }
   return collision;
 }
+
+function alligatorCollision(){
+  var collision;
+  var rowData = rowInfo[11];
+  var locs = rowData.locs;
+  for(var i = 0; i < locs.length; i++){
+    collision = collision || overlap (frogsu, frogx, rowData.item, alligator[i],carAllowance);
+  }
+}
+
 function updateScore(){
   if (forwardMove == true){
     forwardMove = false;
@@ -389,8 +408,9 @@ function updateScore(){
 
 function placeLadyFrog(){
   for(var i = 0; i < row3LogLocs.length; i++){
-    if(row3LogLocs[i] + ladyFrog[2] + 5 < 0){
-      ladyFrogx = row3LogLocs[i] + Math.floor(Math.random()*(0-row3LogLocs[i]-ladyFrog[2]));
+    if(row3LogLocs[i] + ladyFrog[2] + 10 < 0){
+      ladyFrogx = row3LogLocs[i] + Math.floor(Math.random()*(bigLog[2]-ladyFrog[2]));
+      if(ladyFrogx>-ladyFrog[2])ladyFrogx=-ladyFrog[2];
       ladyFrogState = 0;
       return;
     }
