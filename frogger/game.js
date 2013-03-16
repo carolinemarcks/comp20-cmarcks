@@ -271,11 +271,13 @@ function updateGame(){
   if (!isGameOver) updateBoard();
   time -= 50;
   if (time == 0) manageDeath();
-  var randomnumber=Math.floor(Math.random()*301);
-  if (randomnumber==5 && ladyFrogState == 2){
+  var randomnumber=Math.floor(Math.random()*1000);
+  if ((randomnumber >= 4 || randomnumber < 7) && ladyFrogState == 2){
     placeLadyFrog();
-  }else if (randomnumber == 6 && !flyVisible){
+  }else if ((randomnumber >= 7 || randomnumber < 10) && !flyVisible){
     placeFly();
+  }else if (randomnumber == 10){
+    flyVisible = false;
   }
   
 }
