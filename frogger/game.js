@@ -90,6 +90,7 @@ function drawFrog(x,y,frogstate,rotate){
   }else
   ctx.drawImage(img,sourceX, sourceY, w, h, x, y, w, h);
 }
+
 function drawScore(){
   frogLifex = 0;
   for(var i = 0; i < numLives; i++){
@@ -105,85 +106,7 @@ function drawScore(){
   ctx.fillText("Highcore:"+highscore, 80, 560);
 }
 
-function initGameVars(){
-  frogx = 190;//190;
-  frogRow = 12;//12;
-  ladyFrogx = -200;
-  ladyFrogRow = 3;
-  ladyFrogState = 2; //0 = alone 1 = with otherfrog, 2 = invisible
-  numLives = 3;
-  isGameOver = false;
-  level = 1;
-  numWins = 0;
-  time = 30000;
-  speeds=[2,3,-2,-3];
-  
-  row1LogLocs = [10, 160, 350];
-  row1Alligators = [480];
-  row2TurtleLocs = [20, 55, 160, 195, 300, 335, 540, 575];
-  row3LogLocs = [0, 300, 500];
-  row4LogLocs = [0, 105, 260];
-  row5TurtleLocs = [-10, 25, 60, 150, 185, 220, 310, 345, 380];
-  row6SnakeLocs = [-5,40];
-  row7CarLocs = [200,370];
-  row8CarLocs = [-10,90,320];	
-  row9CarLocs = [125,300,380];	
-  row10CarLocs = [25,165,250];
-  row11CarLocs = [0,100,290];
 
-  rowInfo = [{'locs':row1LogLocs,'speed':0,'item':medLog,'offset':greenblock[3]+40,'cycle':580},
-	         {'locs':row2TurtleLocs,'speed':2,'item':turtle1,'offset':greenblock[3]+75,'cycle':630},
-	         {'locs':row3LogLocs,'speed':1,'item':bigLog,'offset':greenblock[3]+110,'cycle':740},
-	         {'locs':row4LogLocs,'speed':0,'item':smallLog,'offset':greenblock[3]+145,'cycle':490},
-	         {'locs':row5TurtleLocs,'speed':3,'item':turtle1,'offset':greenblock[3]+180,'cycle':475},
-	         {'locs':row6SnakeLocs,'speed':3,'item':snake,'offset':greenblock[3]+230,'cycle':600},
-	         {'locs':row7CarLocs,'speed':2,'item':truck6,'offset':greenblock[3]+265,'cycle':465},
-	         {'locs':row8CarLocs,'speed':1,'item':car7,'offset':greenblock[3]+300,'cycle':450},
-	         {'locs':row9CarLocs,'speed':3,'item':car8,'offset':greenblock[3]+335,'cycle':460},
-	         {'locs':row10CarLocs,'speed':0, 'item':car9_1,'offset':greenblock[3]+370,'cycle':495},
-	         {'locs':row11CarLocs,'speed':2, 'item':car10,'offset':greenblock[3]+405,'cycle':505},
-	         {'locs':row1Alligators,'speed':0,'item':alligator,'offset':greenblock[3]+40,'cycle':580}];
-
-  carAllowance = 6;
-  turtleOverlapAllowance = -10;
-  turtleContainmentAllowance = 6;
-  logAllowance = 6;
-  
-  
-  flyColumn = 3;
-  flyLocs = [20,103,189,274,358]
-  flyVisible = false;
-  score = 0;
-  highscore = localStorage["frogger_high"]
-  if (highscore == null)highscore = 0;
-  rowProgress = 12;
-  forwardMove = false;
-  rowDims = [60,98,130,167,200,235,280,320,360,395,428,465,500];
-  winLocs = [[6,21],[91,105],[176,191],[259,276],[346,359]];
-}
-
-function initSpriteVars(){
-  //all image locs stored by x,y,width,height
-  bigLog = [4,164,184,24];
-  medLog = [4,196,120,24];
-  smallLog = [4,230,90,20];
-  turtle1 = [12,406,35,25];
-  truck6 = [100,300,54,22];
-  car7 = [44,262,32,29];
-  car8 = [7,264,33,25];
-  car9_1 = [6,298,34,25];
-  car10 = [80,262,29,29];
-  frogger = [9,8,332,40];
-  frogsr = [8,332,27,26];//small right
-  frogsu = [10,366,27,25];//small up
-  ladyFrog = [237,408,20,24];
-  fly = [140,236,16,16];
-  snake = [184,225,38,11];
-  alligator = [156,372,90,24];
-
-  purpleblock=[0,115,399,40];
-  greenblock=[0,54,399,56];
-}
 
 function updateBoard(){
   for (var i = 0; i < rowInfo.length; i++){
@@ -429,4 +352,94 @@ function placeLadyFrog(){
 function placeFly(){
   flyVisible = true;
   flyColumn = Math.floor(Math.random()*4);
+}
+
+function initGameVars(){
+  //frog info
+  frogx = 190;
+  frogRow = 12;
+  ladyFrogx = -200;
+  ladyFrogRow = 3;
+  ladyFrogState = 2; //0 = alone 1 = with otherfrog, 2 = invisible
+  
+  //scoring/game info
+  numLives = 3;
+  isGameOver = false;
+  level = 1;
+  numWins = 0;
+  time = 30000;
+  score = 0;
+  highscore = localStorage["frogger_high"]
+  if (highscore == null)highscore = 0;
+  rowProgress = 12;
+  forwardMove = false;
+  
+  //object placement/drawing info
+  initObjLocs();
+  speeds=[2,3,-2,-3];
+  rowInfo = [{'locs':row1LogLocs,'speed':0,'item':medLog,'offset':greenblock[3]+40,'cycle':580},
+	         {'locs':row2TurtleLocs,'speed':2,'item':turtle1,'offset':greenblock[3]+75,'cycle':630},
+	         {'locs':row3LogLocs,'speed':1,'item':bigLog,'offset':greenblock[3]+110,'cycle':740},
+	         {'locs':row4LogLocs,'speed':0,'item':smallLog,'offset':greenblock[3]+145,'cycle':490},
+	         {'locs':row5TurtleLocs,'speed':3,'item':turtle1,'offset':greenblock[3]+180,'cycle':475},
+	         {'locs':row6SnakeLocs,'speed':3,'item':snake,'offset':greenblock[3]+230,'cycle':600},
+	         {'locs':row7CarLocs,'speed':2,'item':truck6,'offset':greenblock[3]+265,'cycle':465},
+	         {'locs':row8CarLocs,'speed':1,'item':car7,'offset':greenblock[3]+300,'cycle':450},
+	         {'locs':row9CarLocs,'speed':3,'item':car8,'offset':greenblock[3]+335,'cycle':460},
+	         {'locs':row10CarLocs,'speed':0, 'item':car9_1,'offset':greenblock[3]+370,'cycle':495},
+	         {'locs':row11CarLocs,'speed':2, 'item':car10,'offset':greenblock[3]+405,'cycle':505},
+	         {'locs':row1Alligators,'speed':0,'item':alligator,'offset':greenblock[3]+40,'cycle':580}];
+
+  //overlap pixel allowances
+  carAllowance = 6;
+  turtleOverlapAllowance = -10;
+  turtleContainmentAllowance = 6;
+  logAllowance = 6;
+  
+  //fly
+  flyColumn = 3; 
+  flyVisible = false;
+  
+  //Other necessary dimensions to keep track of
+  rowDims = [60,98,130,167,200,235,280,320,360,395,428,465,500];
+  winLocs = [[6,21],[91,105],[176,191],[259,276],[346,359]];
+}
+
+function initObjLocs(){  
+  row1LogLocs = [10, 160, 350];
+  row1Alligators = [480];
+  row2TurtleLocs = [20, 55, 160, 195, 300, 335, 540, 575];
+  row3LogLocs = [0, 300, 500];
+  row4LogLocs = [0, 105, 260];
+  row5TurtleLocs = [-10, 25, 60, 150, 185, 220, 310, 345, 380];
+  row6SnakeLocs = [-5,40];
+  row7CarLocs = [200,370];
+  row8CarLocs = [-10,90,320];	
+  row9CarLocs = [125,300,380];	
+  row10CarLocs = [25,165,250];
+  row11CarLocs = [0,100,290];
+  flyLocs = [20,103,189,274,358];
+}
+
+function initSpriteVars(){
+  //all image locs stored by x,y,width,height
+  bigLog = [4,164,184,24];
+  medLog = [4,196,120,24];
+  smallLog = [4,230,90,20];
+  turtle1 = [12,406,35,25];
+  truck6 = [100,300,54,22];
+  car7 = [44,262,32,29];
+  car8 = [7,264,33,25];
+  car9_1 = [6,298,34,25];
+  car10 = [80,262,29,29];
+  frogger = [9,8,332,40];
+  frogsr = [8,332,27,26];//small right
+  frogsu = [10,366,27,25];//small up
+  ladyFrog = [237,408,20,24];
+  fly = [140,236,16,16];
+  snake = [184,225,38,11];
+  alligator = [156,372,90,24];
+
+  purpleblock=[0,115,399,40];
+  greenblock=[0,54,399,56];
 }
