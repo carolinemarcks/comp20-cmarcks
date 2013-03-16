@@ -128,8 +128,8 @@ function initGameVars(){
 	         {'locs':row11CarLocs,'speed':2, 'item':car10,'offset':greenblock[3]+405,'cycle':505}];
 
   carAllowance = 6;
-  turtleOverlapAllowance = -30;
-  turtleContainmentAllowance = 20;
+  turtleOverlapAllowance = -20;
+  turtleContainmentAllowance = 6;
   logAllowance = 6;
   
   
@@ -311,7 +311,8 @@ function collisionOnTurtleRow(){
   var frog;
   if(ladyFrogState == 1) frog = ladyFrog;
   else frog = frogsu;
-  for(var i = 0; i < logLocs.length; i++){
+  for(var i = 0; i <= logLocs.length; i++){
+    i = i % logLocs.length; //wrap around to catch overlaps on opp side of array
     contained = contained || contain (frog, frogx, rowData.item, logLocs[i],turtleContainmentAllowance);
     overlapped = overlap(frog, frogx, rowData.item, logLocs[i],turtleOverlapAllowance);
     if (overlapped&&prevOverlapped)contained = true;
