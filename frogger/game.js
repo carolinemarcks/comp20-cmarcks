@@ -33,7 +33,13 @@ function drawBoard(){
   //top green block
   ctx.drawImage(img,greenblock[0],greenblock[1],greenblock[2],greenblock[3],0,40,
     greenblock[2],greenblock[3]);
-
+    
+  ctx.fillStyle = "#FFFFFF";
+  ctx.fillRect(200,530,190,29);
+  ctx.fillStyle = "#7CFC00";
+  timewidth = 186 * (time/30000)
+  ctx.fillRect(202,532,timewidth,25);
+  
   drawScore();
 
   for(var i = 0; i < rowInfo.length; i++){
@@ -290,6 +296,7 @@ function manageWin(){
 
 function manageDeath(){
   numLives--;
+  time = 30000;
   if(numLives == 0){
     isGameOver = true;
     if (score > highscore){
