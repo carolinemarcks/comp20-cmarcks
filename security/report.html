@@ -28,6 +28,29 @@
     <li>Resolution: require user registration (ie creating a password) and require the user to submit that password before their score is recorded in ScoreCenter.</li>
   </ul>
 </li>
+<li>No Field Input Validation
+  <ul>
+    <li>Location: "/submit.json", "index.html", ""(homepage) </li>
+    <li>Severity of issue: high</li>
+    <li>Description: in submit.json, the bodies of the "game_title", "username", or other fields can have javascript injected into them.  This javascript will then execute on any page it is rendered on, like the homepage or search result pages.  Examples of such scripts are alert boxes and redirects, making the site unusable for other users.  These could be inserted by posting 
+        <div class = code>{"game_title":"frogger","username":"&ltscript&gt alert(\"HELLO\");&lt /script &gt ","score":"87"}</div>
+        or
+        <div class = code>{"game_title":"&ltscript&gt window.location = \"http://www.google.com/\";&lt/script&gt","username":"batman","score":"87"}
+        </div>
+        The attacker could also use the script to change the content of the page as it renders and change all of the apparent scores, also rendering the page useless.
+    </li>
+    <li>Resolution: encode all input with the escape() function before rendering it on the page</li>
+  </ul>
+</li>
+<li>No Verification of Submitter Identity
+  <ul>
+    <li>Location: "/submit.json" </li>
+    <li>Severity of issue: high</li>
+    <li>Description: allows jsons to be submitted by any source, whether or not it actually be a gaming website.
+    </li>
+    <li>Resolution: modify the "res.header("Access-Control-Allow-Origin", "*");" line in the source code to only accept from verified game sources</li>
+  </ul>
+</li>
 </ol>
 <a name ="conclusion"></a><h1>Conclusion</h1>
 
