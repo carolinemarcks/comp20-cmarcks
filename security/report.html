@@ -4,30 +4,32 @@
 
 <head>
 <title>ScoreCenter Security Analysis</title>
-
+<link rel="stylesheet" href="style.css"> 
 </head>
 
 <body>
+<div id="rightcol"></div>
+<div id="leftcol"></div>
 <h1 class="title">ScoreCenter Security Analysis</h1>
-<a href="#introduction">Introduction</a> | <a href="#methodology">Methodology</a> | <a href="#abstract">Abstract of Findings</a> | <a href="#issues">Issues Found</a> | <a href="#conclusion">Conclusion</a>
+<div id = "toc"><a href="#introduction">Introduction</a> | <a href="#methodology">Methodology</a> | <a href="#abstract">Abstract of Findings</a> | <a href="#issues">Issues Found</a> | <a href="#conclusion">Conclusion</a></div>
 
-<a name ="introduction"></a><h1>Introduction</h1>
+<a name ="introduction"></a><h2>Introduction</h2>
 
 <p>ScoreCenter is a resource to hold the scores for a number of online games.  It has capabilities for sorting by game and by user, in some instances sorting by score (high to low). This online resource removes the burden of server side development from the game developers.</p>
 <p>In the gaming community, high score is a major point of pride. The security of ScoreCenter, therefore, is paramount to it's usability by web games. We have been hired to examine ScoreCenter on the subject of security, and present our findings and recommendations here.</p>
 
-<a name ="methodology"></a><h1>Methodology</h1>
+<a name ="methodology"></a><h2>Methodology</h2>
 <p> To inspect the product, the source code was supplied by Jacob Lipson, which was run locally.  Most of the issues were found with a basic code review.  Simple command line tools (eg curl) were also used to post custom data to the webpage.
 
-<a name ="abstract"></a><h1>Abstract</h1>
+<a name ="abstract"></a><h2>Abstract</h2>
 <p>The issues fall into two main categories. The first is verification.  There is no verification of user or game identity.  This means that anyone can send the website data containing a username that is not their own, or with a game title that they have not actually played (and therefore do not deserve to be listed in the scores for).  The second issue lies in input validation.  Attackers can change the page to present inaccurate data or bombard users with popups and redirects if they so choose.
-<a name ="issues"></a><h1>Issues</h1>
+<a name ="issues"></a><h2>Issues</h2>
 <ol>
 <li>No Field Input Validation
   <ul>
     <li>Location: "/submit.json", "/", and potentially "/showuserscores"</li>
-    <li>Severity of issue: High</li>
-    <li>Description: in submit.json, the bodies of "game_title", "username", or other fields can have javascript injected into them.  This javascript will then execute on any page it is rendered on, like the homepage or search result pages.  Examples of such scripts are alert boxes and redirects, making the site unusable for other users.  These could be inserted by posting 
+    <li>Severity of issue: High- All data on the page can be changed or users can be forced to endure popups/redirects with no resolution</li>
+    <li>Description: in submit.json, the bodies of "game_title", "username", or other fields can have javascript injected into them.  This javascript will then execute on any page it is rendered on, like the homepage or search result pages.  Examples of such scripts are alert boxes and redirects (potentially to phishing sites), making the site unusable for other users.  These could be inserted by posting 
         <div class = code>{"game_title":"frogger","username":"&ltscript&gt alert(\"HELLO\");&lt /script &gt ","score":"87"}</div>
         or
         <div class = code>{"game_title":"&ltscript&gt window.location = \"http://www.google.com/\";&lt/script&gt","username":"batman","score":"87"}
@@ -40,23 +42,22 @@
 <li>No Verification of Submitter Identity
   <ul>
     <li>Location: "/submit.json" </li>
-    <li>Severity of issue: Medium </li>
+    <li>Severity of issue: Medium- even an inexperienced attacker could to submit a json with any data they like using curl from the command line, but it would not be able to upset the current data or display of the webpage</li>
     <li>Description: allows jsons to be submitted by any source, whether or not it actually be a gaming website.
     </li>
-    <li>Resolution: modify the "res.header("Access-Control-Allow-Origin", "*");" line in the source code to only accept from verified game sources</li>
+    <li>Resolution: modify the "res.header("Access-Control-Allow-Origin", "*");" line in the source code to only accept from verified game sources rather than the wildcard "*" accepting them from all sites.</li>
   </ul>
 </li>
 <li>No User Verification
   <ul>
     <li>Location: "/submit.json" </li>
-    <li>Severity of issue: Medium</li>
+    <li>Severity of issue: Low- although impersonation will cause problems on the usersearch page, it is very unlikely that the actual high scores will be upset by impersonators, as those who are receiving high scores (most likely) all want their own unique identity<</li>
     <li>Description: Anyone can submit data to ScoreCenter with any username.  As such, any game player can enter a username without verifying it is not associated with another user, therefore clogging the scores for certain names. </li>
-    <li>Resolution: require user registration (ie creating a password) and require the user to submit that password before their score is recorded in ScoreCenter.</li>
+    <li>Resolution: require user registration (ie creating a password) and require the user to submit that password before their score is recorded in ScoreCenter. </li>
   </ul>
 </li>
 </ol>
-<a name ="conclusion"></a><h1>Conclusion</h1>
-
+<a name ="conclusion"></a><h2>Conclusion</h2>
 </body>
 
 </html>
